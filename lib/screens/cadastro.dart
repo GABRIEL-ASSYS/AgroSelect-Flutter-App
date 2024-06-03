@@ -1,3 +1,4 @@
+import 'package:addcs/screens/login.dart';
 import 'package:addcs/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:addcs/screens/components/primary_button.dart';
@@ -143,6 +144,10 @@ class _CadastroScreenState extends State<CadastroScreen> {
                             gravity: ToastGravity.BOTTOM,
                             fontSize: 25,
                             timeInSecForIosWeb: 3,
+                          );
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (context) => LoginScreen()),
                           );
                         } else {
                           Fluttertoast.showToast(
