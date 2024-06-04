@@ -23,6 +23,24 @@ abstract class PrimaryButtonProperties {
   );
 }
 
+abstract class SecundaryButtonProperties {
+  static double size = 400;
+
+  static TextStyle textStyle = TextStyle(
+    color: AppColors.branco,
+    fontSize: 25,
+    fontWeight: FontWeight.w600,
+  );
+
+  static Color iconColor = AppColors.branco;
+
+  static BoxDecoration boxDecoration = BoxDecoration(
+    boxShadow: kElevationToShadow[6],
+    borderRadius: BorderRadius.circular(30),
+    color: AppColors.verde,
+  );
+}
+
 abstract class FloatingButton {
   static double size = 60;
 
