@@ -148,7 +148,7 @@ class _CadastroEntregadorScreenState extends State<CadastroEntregadorScreen> {
                           ),
                       ),
                     ),
-                    SizedBox(height: 30),
+                    const SizedBox(height: 30),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -177,6 +177,7 @@ class _CadastroEntregadorScreenState extends State<CadastroEntregadorScreen> {
                         }),
                       ],
                     ),
+                    const SizedBox(height: 50),
                   ],
                 ),
               ),

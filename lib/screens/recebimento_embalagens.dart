@@ -1,5 +1,8 @@
+import 'package:addcs/screens/components/primary_button.dart';
+import 'package:addcs/screens/menu.dart';
 import 'package:addcs/themes.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class RecebimentoEmbalagensScreen extends StatefulWidget {
   const RecebimentoEmbalagensScreen({super.key});
@@ -695,6 +698,36 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                           ),
                       ),
                     ),
+                    const SizedBox(height: 30),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        PrimaryButton(text: 'Cadastrar', onTap: () {
+                          if (_formKey.currentState!.validate()) {
+                            Fluttertoast.showToast(
+                              msg: "Cadastro realizado com sucesso!",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              fontSize: 40,
+                              timeInSecForIosWeb: 3,
+                            );
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (context) => const MenuScreen()),
+                            );
+                          } else {
+                            Fluttertoast.showToast(
+                              msg: "Por favor, preencha todos os campos corretamente.",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              fontSize: 25,
+                              timeInSecForIosWeb: 3,
+                            );
+                          }
+                        }),
+                      ],
+                    ),
+                    const SizedBox(height: 50),
                   ],
                 ),
               ),

@@ -36,7 +36,7 @@ class MenuScreen extends StatelessWidget {
                       onTap: (){
                         Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(builder: (context) => RecebimentoEmbalagensScreen()),
+                            MaterialPageRoute(builder: (context) => const RecebimentoEmbalagensScreen()),
                         );
                       },
                     ),
@@ -46,7 +46,7 @@ class MenuScreen extends StatelessWidget {
                       onTap: (){
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => CadastroEntregadorScreen()),
+                          MaterialPageRoute(builder: (context) => const CadastroEntregadorScreen()),
                         );
                       },
                     ),
