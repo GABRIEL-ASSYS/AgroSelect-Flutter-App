@@ -1,5 +1,6 @@
 import 'package:addcs/screens/cadastro.dart';
 import 'package:addcs/screens/components/primary_button.dart';
+import 'package:addcs/screens/menu.dart';
 import 'package:flutter/material.dart';
 import 'package:addcs/themes.dart';
 
@@ -84,11 +85,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      PrimaryButton(text: 'Entrar', onTap: () {}),
+                      PrimaryButton(text: 'Entrar', onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const MenuScreen()),
+                        );
+                      }),
                       const SizedBox(height: 20),
                       PrimaryButton(text: 'Cadastrar', onTap: () {
                         Navigator.push(
-                            context,
+                          context,
                           MaterialPageRoute(builder: (context) => const CadastroScreen()),
                         );
                       }),
