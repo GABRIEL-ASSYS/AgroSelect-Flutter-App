@@ -24,11 +24,11 @@ abstract class PrimaryButtonProperties {
 }
 
 abstract class SecundaryButtonProperties {
-  static double size = 400;
+  static double size = 500;
 
   static TextStyle textStyle = TextStyle(
     color: AppColors.branco,
-    fontSize: 25,
+    fontSize: 35,
     fontWeight: FontWeight.w600,
   );
 
