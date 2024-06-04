@@ -1,3 +1,4 @@
+import 'package:addcs/screens/cadastro_entregador.dart';
 import 'package:addcs/screens/components/secundary_button.dart';
 import 'package:addcs/screens/recebimento_embalagens.dart';
 import 'package:addcs/themes.dart';
@@ -43,7 +44,10 @@ class MenuScreen extends StatelessWidget {
                     SecundaryButton(
                       text: 'Cadastro Entregador',
                       onTap: (){
-
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => CadastroEntregadorScreen()),
+                        );
                       },
                     ),
                     const SizedBox(height: 30),
