@@ -30,14 +30,14 @@ class _CadastroScreenState extends State<CadastroScreen> {
         child: Scaffold(
           appBar: AppBar(
             leading: IconButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                icon: Icon(
-                  Icons.arrow_back,
-                  size: 55,
-                  color: AppColors.verde,
-                ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: Icon(
+                Icons.arrow_back,
+                size: 55,
+                color: AppColors.verde,
+              ),
             ),
           ),
           body: Center(
@@ -146,20 +146,34 @@ class _CadastroScreenState extends State<CadastroScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      PrimaryButton(text: 'Cadastrar', onTap: () {
+                      PrimaryButton(text: 'Cadastrar', onTap: () async {
                         if (_formKey.currentState!.validate()) {
-                          _authService.loginUsuario(email: _emailController.text, senha: _senhaController.text);
-                          Fluttertoast.showToast(
-                            msg: "Cadastro realizado com sucesso!",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.BOTTOM,
-                            fontSize: 25,
-                            timeInSecForIosWeb: 3,
-                          );
-                          Navigator.pushReplacement(
+                          try {
+                            await _authService.cadastroUsuario(
+                              nome: _nomeController.text,
+                              email: _emailController.text,
+                              senha: _passwordController.text,
+                            );
+                            Fluttertoast.showToast(
+                              msg: "Cadastro realizado com sucesso!",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              fontSize: 25,
+                              timeInSecForIosWeb: 3,
+                            );
+                            Navigator.pushReplacement(
                               context,
-                              MaterialPageRoute(builder: (context) => LoginScreen()),
-                          );
+                              MaterialPageRoute(builder: (context) => const LoginScreen()),
+                            );
+                          } catch (e) {
+                            Fluttertoast.showToast(
+                              msg: e.toString(),
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              fontSize: 25,
+                              timeInSecForIosWeb: 3,
+                            );
+                          }
                         } else {
                           Fluttertoast.showToast(
                             msg: "Por favor, preencha todos os campos corretamente.",
