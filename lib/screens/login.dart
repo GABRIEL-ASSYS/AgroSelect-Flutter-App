@@ -4,6 +4,7 @@ import 'package:addcs/screens/menu.dart';
 import 'package:addcs/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:addcs/themes.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -93,12 +94,25 @@ class _LoginScreenState extends State<LoginScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      PrimaryButton(text: 'Entrar', onTap: () {
-                        _authService.loginUsuario(email: _emailController.text, senha: _senhaController.text);
-                        Navigator.push(
+                      PrimaryButton(text: 'Entrar', onTap: () async {
+                        try {
+                          await _authService.loginUsuario(
+                            email: _emailController.text,
+                            senha: _senhaController.text,
+                          );
+                          Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => const MenuScreen()),
-                        );
+                          );
+                        } catch (e) {
+                          Fluttertoast.showToast(
+                            msg: e.toString(),
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            fontSize: 25,
+                            timeInSecForIosWeb: 3,
+                          );
+                        }
                       }),
                       const SizedBox(height: 20),
                       PrimaryButton(text: 'Cadastrar', onTap: () {
