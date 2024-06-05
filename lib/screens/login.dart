@@ -2,6 +2,7 @@ import 'package:addcs/screens/cadastro.dart';
 import 'package:addcs/screens/components/primary_button.dart';
 import 'package:addcs/screens/menu.dart';
 import 'package:addcs/services/auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:addcs/themes.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -59,6 +60,15 @@ class _LoginScreenState extends State<LoginScreen> {
                               decoration: AppInputs.newInputDecoration(
                                   "seuemail@dominio.com", "E-mail"),
                               keyboardType: TextInputType.emailAddress,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Por favor, insira seu e-mail';
+                                }
+                                if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                                  return 'Por favor, insira um e-mail válido';
+                                }
+                                return null;
+                              },
                             ),
                           ),
                           TextFormField(
@@ -67,6 +77,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             decoration:
                             AppInputs.newInputDecoration("******", "Senha"),
                             obscureText: true,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Por favor, insira sua senha';
+                              }
+                              return null;
+                            },
                           ),
                           Padding(
                             padding: const EdgeInsets.only(bottom: 30.0),
@@ -95,18 +111,44 @@ class _LoginScreenState extends State<LoginScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       PrimaryButton(text: 'Entrar', onTap: () async {
-                        try {
-                          await _authService.loginUsuario(
-                            email: _emailController.text,
-                            senha: _senhaController.text,
-                          );
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const MenuScreen()),
-                          );
-                        } catch (e) {
+                        if (_formKey.currentState!.validate()) {
+                          try {
+                            await _authService.loginUsuario(
+                              email: _emailController.text,
+                              senha: _senhaController.text,
+                            );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const MenuScreen()),
+                            );
+                          } catch (e) {
+                            String errorMessage;
+                            if (e is FirebaseAuthException) {
+                              switch (e.code) {
+                                case 'user-not-found':
+                                  errorMessage = 'Seu email não está cadastrado.';
+                                  break;
+                                case 'wrong-password':
+                                  errorMessage = 'Senha incorreta.';
+                                  break;
+                                default:
+                                  errorMessage = 'Ocorreu um erro. Por favor, tente novamente.';
+                                  break;
+                              }
+                            } else {
+                              errorMessage = 'Ocorreu um erro. Por favor, tente novamente.';
+                            }
+                            Fluttertoast.showToast(
+                              msg: errorMessage,
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              fontSize: 25,
+                              timeInSecForIosWeb: 3,
+                            );
+                          }
+                        } else {
                           Fluttertoast.showToast(
-                            msg: e.toString(),
+                            msg: "Por favor, preencha todos os campos corretamente.",
                             toastLength: Toast.LENGTH_SHORT,
                             gravity: ToastGravity.BOTTOM,
                             fontSize: 25,
