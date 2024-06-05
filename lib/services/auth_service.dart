@@ -1,23 +1,31 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
-  FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  cadastroUsuario({
+  Future<void> cadastroUsuario({
     required String nome,
     required String email,
     required String senha,
-  }) {
-    _firebaseAuth.createUserWithEmailAndPassword(
-      email: email,
-      password: senha,
-    );
+  }) async {
+    try {
+      await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: senha,
+      );
+    } catch (e) {
+      throw Exception('Erro ao cadastrar usuário: $e');
+    }
   }
 
-  loginUsuario({
+  Future<void> loginUsuario({
     required String email,
     required String senha,
-  }) {
-    _firebaseAuth.signInWithEmailAndPassword(email: email, password: senha);
+  }) async {
+    try {
+      await _firebaseAuth.signInWithEmailAndPassword(email: email, password: senha);
+    } catch (e) {
+      throw Exception('Erro ao fazer login: $e');
+    }
   }
 }
