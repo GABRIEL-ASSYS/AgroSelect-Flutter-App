@@ -1,6 +1,7 @@
 import 'package:addcs/screens/components/primary_button.dart';
 import 'package:addcs/screens/menu.dart';
 import 'package:addcs/themes.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -57,6 +58,87 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
   final TextEditingController _rigida10Controller = TextEditingController();
   final TextEditingController _rigida20Controller = TextEditingController();
   final TextEditingController _obsController = TextEditingController();
+
+  final CollectionReference embalagemCollection = FirebaseFirestore.instance.collection('embalagens');
+
+  Future<void> cadastrarEmbalagem() async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        await embalagemCollection.add({
+          'data': _dataController.text,
+          'hora': _horaController.text,
+          'entregador': _entregadorController.text,
+          'produtor': _produtorController.text,
+          'telefone': _telefoneController.text,
+          'placa': _placaController.text,
+          'propriedade': _propriedadeController.text,
+          'cnpj': _cnpjController.text,
+          'endereco': _enderecoController.text,
+          'pead250': _pead250Controller.text,
+          'pead1': _pead1Controller.text,
+          'pead5': _pead5Controller.text,
+          'pead10': _pead10Controller.text,
+          'pead20': _pead20Controller.text,
+          'coex250': _coex250Controller.text,
+          'coex1': _coex1Controller.text,
+          'coex5': _coex5Controller.text,
+          'coex10': _coex10Controller.text,
+          'coex20': _coex20Controller.text,
+          'tampas': _tampasController.text,
+          'plasticoMisto1': _plasticoMisto1Controller.text,
+          'plasticoMisto5': _plasticoMisto5Controller.text,
+          'plasticoMisto10': _plasticoMisto10Controller.text,
+          'plasticoMisto20': _plasticoMisto20Controller.text,
+          'acoContaminado1': _acoContaminado1Controller.text,
+          'acoContaminado5': _acoContaminado5Controller.text,
+          'acoContaminado10': _acoContaminado10Controller.text,
+          'acoContaminado20': _acoContaminado20Controller.text,
+          'papelao': _papelaoController.text,
+          '_aluminio250': _aluminio250Controller.text,
+          '_aluminio1': _aluminio1Controller.text,
+          '_aluminio15': _aluminio15Controller.text,
+          '_aco34': _aco34Controller.text,
+          'hidroxido': _hidroxidoController.text,
+          'acoNL': _acoNLController.text,
+          'ibc': _ibcController.text,
+          'plasticoQuantidade': _plasticoQuantidadeController.text,
+          'plasticoQuilos': _plasticoQuilosController.text,
+          'rigida1': _rigida1Controller.text,
+          'rigida5': _rigida5Controller.text,
+          'rigida10': _rigida10Controller.text,
+          'rigida20': _rigida20Controller.text,
+          'obs': _obsController.text,
+        });
+        Fluttertoast.showToast(
+          msg: "Cadastro realizado com sucesso!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          fontSize: 40,
+          timeInSecForIosWeb: 3,
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MenuScreen()),
+        );
+      } catch (e) {
+        Fluttertoast.showToast(
+          msg: "Erro ao cadastrar: $e",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          fontSize: 25,
+          timeInSecForIosWeb: 3,
+        );
+      }
+    } else {
+      Fluttertoast.showToast(
+        msg: "Por favor, preencha todos os campos corretamente.",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        fontSize: 25,
+        timeInSecForIosWeb: 3,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -789,19 +871,74 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        PrimaryButton(text: 'Cadastrar', onTap: () {
+                        PrimaryButton(text: 'Cadastrar', onTap: () async {
                           if (_formKey.currentState!.validate()) {
-                            Fluttertoast.showToast(
-                              msg: "Cadastro realizado com sucesso!",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.BOTTOM,
-                              fontSize: 40,
-                              timeInSecForIosWeb: 3,
-                            );
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(builder: (context) => const MenuScreen()),
-                            );
+                            try {
+                              await embalagemCollection.add({
+                                'data': _dataController.text,
+                                'hora': _horaController.text,
+                                'entregador': _entregadorController.text,
+                                'produtor': _produtorController.text,
+                                'telefone': _telefoneController.text,
+                                'placa': _placaController.text,
+                                'propriedade': _propriedadeController.text,
+                                'cnpj': _cnpjController.text,
+                                'endereco': _enderecoController.text,
+                                'pead250': _pead250Controller.text,
+                                'pead1': _pead1Controller.text,
+                                'pead5': _pead5Controller.text,
+                                'pead10': _pead10Controller.text,
+                                'pead20': _pead20Controller.text,
+                                'coex250': _coex250Controller.text,
+                                'coex1': _coex1Controller.text,
+                                'coex5': _coex5Controller.text,
+                                'coex10': _coex10Controller.text,
+                                'coex20': _coex20Controller.text,
+                                'tampas': _tampasController.text,
+                                'plasticoMisto1': _plasticoMisto1Controller.text,
+                                'plasticoMisto5': _plasticoMisto5Controller.text,
+                                'plasticoMisto10': _plasticoMisto10Controller.text,
+                                'plasticoMisto20': _plasticoMisto20Controller.text,
+                                'acoContaminado1': _acoContaminado1Controller.text,
+                                'acoContaminado5': _acoContaminado5Controller.text,
+                                'acoContaminado10': _acoContaminado10Controller.text,
+                                'acoContaminado20': _acoContaminado20Controller.text,
+                                'papelao': _papelaoController.text,
+                                '_aluminio250': _aluminio250Controller.text,
+                                '_aluminio1': _aluminio1Controller.text,
+                                '_aluminio15': _aluminio15Controller.text,
+                                '_aco34': _aco34Controller.text,
+                                'hidroxido': _hidroxidoController.text,
+                                'acoNL': _acoNLController.text,
+                                'ibc': _ibcController.text,
+                                'plasticoQuantidade': _plasticoQuantidadeController.text,
+                                'plasticoQuilos': _plasticoQuilosController.text,
+                                'rigida1': _rigida1Controller.text,
+                                'rigida5': _rigida5Controller.text,
+                                'rigida10': _rigida10Controller.text,
+                                'rigida20': _rigida20Controller.text,
+                                'obs': _obsController.text,
+                              });
+                              Fluttertoast.showToast(
+                                msg: "Cadastro realizado com sucesso!",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                fontSize: 40,
+                                timeInSecForIosWeb: 3,
+                              );
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (context) => MenuScreen()),
+                              );
+                            } catch (e) {
+                              Fluttertoast.showToast(
+                                msg: "Erro ao cadastrar: $e",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                fontSize: 25,
+                                timeInSecForIosWeb: 3,
+                              );
+                            }
                           } else {
                             Fluttertoast.showToast(
                               msg: "Por favor, preencha todos os campos corretamente.",

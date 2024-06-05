@@ -50,20 +50,6 @@ class MenuScreen extends StatelessWidget {
                         );
                       },
                     ),
-                    const SizedBox(height: 30),
-                    SecundaryButton(
-                      text: 'Histórico Entregas',
-                      onTap: (){
-
-                      },
-                    ),
-                    const SizedBox(height: 30),
-                    SecundaryButton(
-                      text: 'Histórico Entregadores',
-                      onTap: (){
-
-                      },
-                    ),
                   ],
                 ),
               ),
