@@ -1,4 +1,5 @@
 import 'package:addcs/screens/login.dart';
+import 'package:addcs/services/auth_service.dart';
 import 'package:addcs/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:addcs/screens/components/primary_button.dart';
@@ -13,7 +14,13 @@ class CadastroScreen extends StatefulWidget {
 
 class _CadastroScreenState extends State<CadastroScreen> {
   final _formKey = GlobalKey<FormState>();
+
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _nomeController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _senhaController = TextEditingController();
+
+  final AuthService _authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +65,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 30.0),
                             child: TextFormField(
+                              controller: _nomeController,
                               style: AppInputs.textDecoration,
                               decoration: AppInputs.newInputDecoration(
                                   "Seu Nome", "Nome"),
@@ -73,6 +81,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 30.0),
                             child: TextFormField(
+                              controller: _emailController,
                               style: AppInputs.textDecoration,
                               decoration: AppInputs.newInputDecoration(
                                   "seuemail@dominio.com", "E-mail"),
@@ -113,6 +122,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 30.0),
                             child: TextFormField(
+                              controller: _senhaController,
                               style: AppInputs.textDecoration,
                               decoration: AppInputs.newInputDecoration(
                                   "******", "Confirme a Senha"),
@@ -138,6 +148,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
                     children: [
                       PrimaryButton(text: 'Cadastrar', onTap: () {
                         if (_formKey.currentState!.validate()) {
+                          _authService.loginUsuario(email: _emailController.text, senha: _senhaController.text);
                           Fluttertoast.showToast(
                             msg: "Cadastro realizado com sucesso!",
                             toastLength: Toast.LENGTH_SHORT,

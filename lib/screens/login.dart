@@ -1,6 +1,7 @@
 import 'package:addcs/screens/cadastro.dart';
 import 'package:addcs/screens/components/primary_button.dart';
 import 'package:addcs/screens/menu.dart';
+import 'package:addcs/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:addcs/themes.dart';
 
@@ -13,6 +14,11 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
+
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _senhaController = TextEditingController();
+
+  final AuthService _authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 30.0),
                             child: TextFormField(
+                              controller: _emailController,
                               style: AppInputs.textDecoration,
                               decoration: AppInputs.newInputDecoration(
                                   "seuemail@dominio.com", "E-mail"),
@@ -54,6 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           TextFormField(
+                            controller: _senhaController,
                             style: AppInputs.textDecoration,
                             decoration:
                             AppInputs.newInputDecoration("******", "Senha"),
@@ -86,6 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       PrimaryButton(text: 'Entrar', onTap: () {
+                        _authService.loginUsuario(email: _emailController.text, senha: _senhaController.text);
                         Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => const MenuScreen()),
