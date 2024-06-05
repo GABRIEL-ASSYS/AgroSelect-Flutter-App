@@ -117,10 +117,12 @@ class _LoginScreenState extends State<LoginScreen> {
                               email: _emailController.text,
                               senha: _senhaController.text,
                             );
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const MenuScreen()),
-                            );
+                            if (mounted) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const MenuScreen()),
+                              );
+                            }
                           } catch (e) {
                             String errorMessage;
                             if (e is FirebaseAuthException) {
