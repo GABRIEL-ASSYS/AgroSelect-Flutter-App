@@ -148,6 +148,7 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
           decoration: AppBackground.boxDecoration,
           child: Scaffold(
             appBar: AppBar(
+              backgroundColor: AppColors.verde,
               toolbarHeight: 90,
               leading: IconButton(
                   onPressed: () {
@@ -163,7 +164,7 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                     child: Icon(
                       Icons.arrow_back,
                       size: 55,
-                      color: AppColors.verde,
+                      color: AppColors.branco,
                     ),
                   ),
               ),

@@ -30,14 +30,19 @@ class _CadastroScreenState extends State<CadastroScreen> {
         decoration: AppBackground.boxDecoration,
         child: Scaffold(
           appBar: AppBar(
+            backgroundColor: AppColors.verde,
+            toolbarHeight: 90,
             leading: IconButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: Icon(
-                Icons.arrow_back,
-                size: 55,
-                color: AppColors.verde,
+              icon: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Icon(
+                  Icons.arrow_back,
+                  size: 55,
+                  color: AppColors.branco,
+                ),
               ),
             ),
           ),

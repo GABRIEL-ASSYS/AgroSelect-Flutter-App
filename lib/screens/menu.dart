@@ -1,7 +1,7 @@
-
 import 'package:addcs/themes.dart';
 import 'package:addcs/view/cadastro_entregador.dart';
 import 'package:addcs/view/components/secundary_button.dart';
+import 'package:addcs/view/login.dart';
 import 'package:addcs/view/recebimento_embalagens.dart';
 import 'package:flutter/material.dart';
 
@@ -15,14 +15,24 @@ class MenuScreen extends StatelessWidget {
           decoration: AppBackground.boxDecoration,
           child: Scaffold(
             appBar: AppBar(
+              backgroundColor: AppColors.verde,
+              toolbarHeight: 90,
               leading: IconButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LoginScreen()
+                    ),
+                  );
                 },
-                icon: Icon(
-                  Icons.arrow_back,
-                  size: 55,
-                  color: AppColors.verde,
+                icon: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(
+                    Icons.arrow_back,
+                    size: 55,
+                    color: AppColors.branco,
+                  ),
                 ),
               ),
             ),
