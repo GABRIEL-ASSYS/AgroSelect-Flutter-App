@@ -1,12 +1,13 @@
-import 'package:addcs/screens/login.dart';
+
 import 'package:addcs/services/auth_service.dart';
 import 'package:addcs/themes.dart';
+import 'package:addcs/view/components/primary_button.dart';
+import 'package:addcs/view/login.dart';
 import 'package:flutter/material.dart';
-import 'package:addcs/screens/components/primary_button.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class CadastroScreen extends StatefulWidget {
-  const CadastroScreen({Key? key}) : super(key: key);
+  const CadastroScreen({super.key});
 
   @override
   State<CadastroScreen> createState() => _CadastroScreenState();

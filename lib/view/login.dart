@@ -1,11 +1,13 @@
-import 'package:addcs/screens/cadastro.dart';
-import 'package:addcs/screens/components/primary_button.dart';
-import 'package:addcs/screens/menu.dart';
+
 import 'package:addcs/services/auth_service.dart';
+import 'package:addcs/view/cadastro.dart';
+import 'package:addcs/view/menu.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:addcs/themes.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
+import 'components/primary_button.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

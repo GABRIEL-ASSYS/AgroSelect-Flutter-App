@@ -1,7 +1,8 @@
-import 'package:addcs/screens/cadastro_entregador.dart';
-import 'package:addcs/screens/components/secundary_button.dart';
-import 'package:addcs/screens/recebimento_embalagens.dart';
+
 import 'package:addcs/themes.dart';
+import 'package:addcs/view/cadastro_entregador.dart';
+import 'package:addcs/view/components/secundary_button.dart';
+import 'package:addcs/view/recebimento_embalagens.dart';
 import 'package:flutter/material.dart';
 
 class MenuScreen extends StatelessWidget {

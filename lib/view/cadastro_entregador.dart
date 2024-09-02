@@ -1,6 +1,7 @@
-import 'package:addcs/screens/components/primary_button.dart';
-import 'package:addcs/screens/menu.dart';
+
 import 'package:addcs/themes.dart';
+import 'package:addcs/view/components/primary_button.dart';
+import 'package:addcs/view/menu.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -73,14 +74,23 @@ class _CadastroEntregadorScreenState extends State<CadastroEntregadorScreen> {
           decoration: AppBackground.boxDecoration,
           child: Scaffold(
             appBar: AppBar(
+              toolbarHeight: 90,
               leading: IconButton(
                   onPressed: (){
-                    Navigator.of(context).pop();
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const MenuScreen()
+                        ),
+                    );
                   },
-                  icon: Icon(
-                    Icons.arrow_back,
-                    size: 55,
-                    color: AppColors.verde,
+                  icon: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(
+                      Icons.arrow_back,
+                      size: 55,
+                      color: AppColors.verde,
+                    ),
                   ),
               ),
             ),
@@ -230,7 +240,7 @@ class _CadastroEntregadorScreenState extends State<CadastroEntregadorScreen> {
                               );
                               Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(builder: (context) => MenuScreen()),
+                                MaterialPageRoute(builder: (context) => const MenuScreen()),
                               );
                             } catch (e) {
                               Fluttertoast.showToast(
