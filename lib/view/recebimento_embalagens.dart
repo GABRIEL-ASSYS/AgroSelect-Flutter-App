@@ -25,39 +25,39 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
   final TextEditingController _propriedadeController = TextEditingController();
   final TextEditingController _cnpjController = TextEditingController();
   final TextEditingController _enderecoController = TextEditingController();
-  final TextEditingController _pead250Controller = TextEditingController();
-  final TextEditingController _pead1Controller = TextEditingController();
-  final TextEditingController _pead5Controller = TextEditingController();
-  final TextEditingController _pead10Controller = TextEditingController();
-  final TextEditingController _pead20Controller = TextEditingController();
-  final TextEditingController _coex250Controller = TextEditingController();
-  final TextEditingController _coex1Controller = TextEditingController();
-  final TextEditingController _coex5Controller = TextEditingController();
-  final TextEditingController _coex10Controller = TextEditingController();
-  final TextEditingController _coex20Controller = TextEditingController();
-  final TextEditingController _tampasController = TextEditingController();
-  final TextEditingController _plasticoMisto1Controller = TextEditingController();
-  final TextEditingController _plasticoMisto5Controller = TextEditingController();
-  final TextEditingController _plasticoMisto10Controller = TextEditingController();
-  final TextEditingController _plasticoMisto20Controller = TextEditingController();
-  final TextEditingController _acoContaminado1Controller = TextEditingController();
-  final TextEditingController _acoContaminado5Controller = TextEditingController();
-  final TextEditingController _acoContaminado10Controller = TextEditingController();
-  final TextEditingController _acoContaminado20Controller = TextEditingController();
-  final TextEditingController _papelaoController = TextEditingController();
-  final TextEditingController _aluminio250Controller = TextEditingController();
-  final TextEditingController _aluminio1Controller = TextEditingController();
-  final TextEditingController _aluminio15Controller = TextEditingController();
-  final TextEditingController _aco34Controller = TextEditingController();
-  final TextEditingController _hidroxidoController = TextEditingController();
-  final TextEditingController _acoNLController = TextEditingController();
-  final TextEditingController _ibcController = TextEditingController();
-  final TextEditingController _plasticoQuantidadeController = TextEditingController();
-  final TextEditingController _plasticoQuilosController = TextEditingController();
-  final TextEditingController _rigida1Controller = TextEditingController();
-  final TextEditingController _rigida5Controller = TextEditingController();
-  final TextEditingController _rigida10Controller = TextEditingController();
-  final TextEditingController _rigida20Controller = TextEditingController();
+  final TextEditingController _pead250Controller = TextEditingController(text: '0');
+  final TextEditingController _pead1Controller = TextEditingController(text: '0');
+  final TextEditingController _pead5Controller = TextEditingController(text: '0');
+  final TextEditingController _pead10Controller = TextEditingController(text: '0');
+  final TextEditingController _pead20Controller = TextEditingController(text: '0');
+  final TextEditingController _coex250Controller = TextEditingController(text: '0');
+  final TextEditingController _coex1Controller = TextEditingController(text: '0');
+  final TextEditingController _coex5Controller = TextEditingController(text: '0');
+  final TextEditingController _coex10Controller = TextEditingController(text: '0');
+  final TextEditingController _coex20Controller = TextEditingController(text: '0');
+  final TextEditingController _tampasController = TextEditingController(text: '0');
+  final TextEditingController _plasticoMisto1Controller = TextEditingController(text: '0');
+  final TextEditingController _plasticoMisto5Controller = TextEditingController(text: '0');
+  final TextEditingController _plasticoMisto10Controller = TextEditingController(text: '0');
+  final TextEditingController _plasticoMisto20Controller = TextEditingController(text: '0');
+  final TextEditingController _acoContaminado1Controller = TextEditingController(text: '0');
+  final TextEditingController _acoContaminado5Controller = TextEditingController(text: '0');
+  final TextEditingController _acoContaminado10Controller = TextEditingController(text: '0');
+  final TextEditingController _acoContaminado20Controller = TextEditingController(text: '0');
+  final TextEditingController _papelaoController = TextEditingController(text: '0');
+  final TextEditingController _aluminio250Controller = TextEditingController(text: '0');
+  final TextEditingController _aluminio1Controller = TextEditingController(text: '0');
+  final TextEditingController _aluminio15Controller = TextEditingController(text: '0');
+  final TextEditingController _aco34Controller = TextEditingController(text: '0');
+  final TextEditingController _hidroxidoController = TextEditingController(text: '0');
+  final TextEditingController _acoNLController = TextEditingController(text: '0');
+  final TextEditingController _ibcController = TextEditingController(text: '0');
+  final TextEditingController _plasticoQuantidadeController = TextEditingController(text: '0');
+  final TextEditingController _plasticoQuilosController = TextEditingController(text: '0');
+  final TextEditingController _rigida1Controller = TextEditingController(text: '0');
+  final TextEditingController _rigida5Controller = TextEditingController(text: '0');
+  final TextEditingController _rigida10Controller = TextEditingController(text: '0');
+  final TextEditingController _rigida20Controller = TextEditingController(text: '0');
   final TextEditingController _obsController = TextEditingController();
 
   final CollectionReference embalagemCollection = FirebaseFirestore.instance.collection('embalagens');
@@ -359,13 +359,42 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                 ),
                               ),
                               Padding(
+                                padding: const EdgeInsets.only(bottom: 16),
+                                child: Text(
+                                  "250 ml",
+                                  style: TextStyle(
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.verde,
+                                  ),
+                                ),
+                              ),
+                              Padding(
                                 padding: const EdgeInsets.only(bottom: 30.0),
                                 child: TextFormField(
+
                                   controller: _pead250Controller,
                                   style: AppInputs.textDecoration,
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade", "250 ml"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 16),
+                                child: Text(
+                                  "1 Litro",
+                                  style: TextStyle(
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.verde,
+                                  ),
                                 ),
                               ),
                               Padding(
@@ -376,6 +405,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade", "1 Litro"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               Padding(
@@ -386,6 +421,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade", "5 Litros"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               Padding(
@@ -396,6 +437,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade", "10 Litros"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               Padding(
@@ -406,6 +453,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade", "20 Litros"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               Padding(
@@ -427,6 +480,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade", "250 ml"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               Padding(
@@ -437,6 +496,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade", "1 Litro"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               Padding(
@@ -447,6 +512,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade", "5 Litros"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               Padding(
@@ -457,6 +528,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade", "10 Litros"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               Padding(
@@ -467,6 +544,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade", "20 Litros"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               Padding(
@@ -488,6 +571,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade em quilos", "Quilos"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               Padding(
@@ -520,6 +609,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade", "1 Litro"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               Padding(
@@ -530,6 +625,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade", "5 Litros"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               Padding(
@@ -540,6 +641,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade", "10 Litros"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               Padding(
@@ -550,6 +657,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade", "20 Litros"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               Padding(
@@ -571,6 +684,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade", "1 Litro"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               Padding(
@@ -581,6 +700,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade", "5 Litros"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               Padding(
@@ -591,6 +716,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade", "10 Litros"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               Padding(
@@ -601,6 +732,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade", "20 Litros"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               Padding(
@@ -633,6 +770,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade em quilos", "Quilos"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               Padding(
@@ -654,6 +797,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade", "250g"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               Padding(
@@ -664,6 +813,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade", "1Kg"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               Padding(
@@ -674,6 +829,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade", "1,5Kg"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               Padding(
@@ -695,6 +856,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade", "Quilos"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               Padding(
@@ -716,6 +883,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade", "Quilos"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               Padding(
@@ -748,6 +921,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade", "Quilos"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               Padding(
@@ -769,6 +948,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade", "Quilos"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               Padding(
@@ -790,6 +975,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade", "Quantidade"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               Padding(
@@ -800,6 +991,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade", "Quilos"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               Padding(
@@ -821,6 +1018,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade", "1 Litro"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               Padding(
@@ -831,6 +1034,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade", "5 Litros"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               Padding(
@@ -841,6 +1050,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade", "10 Litros"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade';
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               Padding(
@@ -851,6 +1066,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   decoration: AppInputs.newInputDecoration(
                                       "insira uma quantidade", "20 Litros"),
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira uma quantidade' ;
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                               Padding(
