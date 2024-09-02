@@ -1,4 +1,3 @@
-
 import 'package:addcs/services/auth_service.dart';
 import 'package:addcs/view/cadastro.dart';
 import 'package:addcs/view/menu.dart';
