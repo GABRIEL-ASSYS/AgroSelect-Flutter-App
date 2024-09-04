@@ -22,15 +22,19 @@ class _RelatoriosScreenState extends State<RelatoriosScreen> {
 
     var fields = doc.data() as Map<String, dynamic>;
 
+    var nome = fields['produtor'] ?? 'Desconhecido';
+    var data = fields['data'] ?? '';
+    var hora = fields['hora'] ?? '';
+
     final List<pw.Widget> contentWidgets = [];
 
-    contentWidgets.add(pw.Text('Relatório Exportado',
+    contentWidgets.add(pw.Text('Relatório $nome - $data - $hora',
       style: pw.TextStyle(fontSize: 40, fontWeight: pw.FontWeight.bold),
     ));
 
     contentWidgets.add(pw.SizedBox(height: 20));
     contentWidgets.add(pw.Text('Aqui estão as informações do relatório:',
-      style: pw.TextStyle(fontSize: 30),
+      style: const pw.TextStyle(fontSize: 30),
     ));
 
     contentWidgets.add(pw.SizedBox(height: 20));
@@ -41,7 +45,7 @@ class _RelatoriosScreenState extends State<RelatoriosScreen> {
           padding: const pw.EdgeInsets.only(bottom: 8),
           child: pw.Text(
             '${fieldLabels[key]}: ${fields[key]}',
-            style: pw.TextStyle(fontSize: 20),
+            style: const pw.TextStyle(fontSize: 20),
           ),
         );
       } else {

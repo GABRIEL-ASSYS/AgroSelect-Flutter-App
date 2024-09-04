@@ -1,4 +1,3 @@
-
 import 'package:addcs/themes.dart';
 import 'package:addcs/view/components/primary_button.dart';
 import 'package:addcs/view/menu.dart';
@@ -199,7 +198,7 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   style: AppInputs.textDecoration,
                                   decoration: AppInputs.newInputDecoration(
                                       "dd/mm/aa", "Data"),
-                                  keyboardType: TextInputType.datetime,
+                                  keyboardType: TextInputType.text,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return 'Por favor, insira uma data';
@@ -215,7 +214,7 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   style: AppInputs.textDecoration,
                                   decoration: AppInputs.newInputDecoration(
                                       "hh:mm", "Hora"),
-                                  keyboardType: TextInputType.datetime,
+                                  keyboardType: TextInputType.text,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return 'Por favor, insira uma hora';
