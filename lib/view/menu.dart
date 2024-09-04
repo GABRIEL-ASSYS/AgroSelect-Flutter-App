@@ -3,6 +3,7 @@ import 'package:addcs/view/cadastro_entregador.dart';
 import 'package:addcs/view/components/secundary_button.dart';
 import 'package:addcs/view/login.dart';
 import 'package:addcs/view/recebimento_embalagens.dart';
+import 'package:addcs/view/relatorios.dart';
 import 'package:flutter/material.dart';
 
 class MenuScreen extends StatelessWidget {
@@ -58,6 +59,16 @@ class MenuScreen extends StatelessWidget {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(builder: (context) => const CadastroEntregadorScreen()),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 30),
+                    SecundaryButton(
+                      text: 'Relatórios de recebimento',
+                      onTap: (){
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => const RelatoriosScreen()),
                         );
                       },
                     ),
