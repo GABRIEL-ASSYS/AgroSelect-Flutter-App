@@ -168,41 +168,115 @@ class _RelatoriosScreenState extends State<RelatoriosScreen> {
                           width: 600,
                           child: Card(
                             margin: const EdgeInsets.all(10),
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 8),
-                                    child: Text(
-                                      'Relatório $nome - $data - $hora',
-                                      style: const TextStyle(
-                                        fontSize: 35,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.green,
-                                      ),
-                                    ),
-                                  ),
-                                  ...fieldOrder.map((key) {
-                                    if (fields.containsKey(key)) {
-                                      return Padding(
-                                        padding:
-                                        const EdgeInsets.only(bottom: 8),
-                                        child: Text(
-                                          '${fieldLabels[key]}: ${fields[key]}',
-                                          style: const TextStyle(
-                                            fontSize: 30,
-                                            color: Colors.green,
-                                          ),
-                                        ),
-                                      );
-                                    } else {
-                                      return const SizedBox.shrink();
-                                    }
-                                  }).toList(),
-                                ],
+                            child: ExpansionTile(
+                              title: Text(
+                                'Relatório $nome - $data - $hora',
+                                style: const TextStyle(
+                                  fontSize: 35,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green,
+                                ),
                               ),
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      ...fieldOrder.map((key) {
+                                        if (fields.containsKey(key)) {
+                                          return Padding(
+                                            padding:
+                                            const EdgeInsets.only(bottom: 8),
+                                            child: Text(
+                                              '${fieldLabels[key]}: ${fields[key]}',
+                                              style: const TextStyle(
+                                                fontSize: 30,
+                                                color: Colors.green,
+                                              ),
+                                            ),
+                                          );
+                                        } else {
+                                          return const SizedBox.shrink();
+                                        }
+                                      }).toList(),
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 30),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                // Adicione a lógica para editar
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: Colors.green,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(30),
+                                                ),
+                                                elevation: 6,
+                                                minimumSize: const Size(150, 70),
+                                              ),
+                                              child: const Text(
+                                                'Editar',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 30,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 8),
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                // Adicione a lógica para excluir
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: Colors.green,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(30),
+                                                ),
+                                                elevation: 6,
+                                                minimumSize: const Size(150, 70),
+                                              ),
+                                              child: const Text(
+                                                'Excluir',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 30,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 8),
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                // Adicione a lógica para exportar PDF
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: Colors.green,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(30),
+                                                ),
+                                                elevation: 6,
+                                                minimumSize: const Size(150, 70),
+                                              ),
+                                              child: const Text(
+                                                'Exportar PDF',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 30,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
