@@ -1,4 +1,5 @@
 import 'package:addcs/themes.dart';
+import 'package:addcs/view/editar_entregador.dart';
 import 'package:addcs/view/menu.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -148,7 +149,14 @@ class _EntregadoresScreenState extends State<EntregadoresScreen> {
                                 children: [
                                   ElevatedButton(
                                     onPressed: () {
-
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => EditarEntregadorScreen(
+                                            documentId: doc.id,
+                                          ),
+                                        ),
+                                      );
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.green,
