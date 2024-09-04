@@ -33,7 +33,7 @@ class _RelatoriosScreenState extends State<RelatoriosScreen> {
     ));
 
     contentWidgets.add(pw.SizedBox(height: 20));
-    contentWidgets.add(pw.Text('Aqui estão as informações do relatório:',
+    contentWidgets.add(pw.Text('Informações do relatório:',
       style: const pw.TextStyle(fontSize: 30),
     ));
 
