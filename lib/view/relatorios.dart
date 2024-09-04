@@ -1,4 +1,5 @@
 import 'package:addcs/themes.dart';
+import 'package:addcs/view/editar_relatorio.dart';
 import 'package:addcs/view/menu.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -207,7 +208,14 @@ class _RelatoriosScreenState extends State<RelatoriosScreen> {
                                           children: [
                                             ElevatedButton(
                                               onPressed: () {
-                                                // Adicione a lógica para editar
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) => EditarRelatorioScreen(
+                                                      documentId: doc.id,
+                                                    ),
+                                                  ),
+                                                );
                                               },
                                               style: ElevatedButton.styleFrom(
                                                 backgroundColor: Colors.green,
@@ -229,7 +237,7 @@ class _RelatoriosScreenState extends State<RelatoriosScreen> {
                                             const SizedBox(width: 8),
                                             ElevatedButton(
                                               onPressed: () {
-                                                // Adicione a lógica para excluir
+                                                // Função de exclusão
                                               },
                                               style: ElevatedButton.styleFrom(
                                                 backgroundColor: Colors.green,
@@ -251,7 +259,7 @@ class _RelatoriosScreenState extends State<RelatoriosScreen> {
                                             const SizedBox(width: 8),
                                             ElevatedButton(
                                               onPressed: () {
-                                                // Adicione a lógica para exportar PDF
+                                                // Função de exportação
                                               },
                                               style: ElevatedButton.styleFrom(
                                                 backgroundColor: Colors.green,
