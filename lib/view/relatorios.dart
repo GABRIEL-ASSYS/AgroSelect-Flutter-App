@@ -236,8 +236,61 @@ class _RelatoriosScreenState extends State<RelatoriosScreen> {
                                             ),
                                             const SizedBox(width: 8),
                                             ElevatedButton(
-                                              onPressed: () {
-                                                // Função de exclusão
+                                              onPressed: () async {
+                                                bool confirm = await showDialog(
+                                                  context: context,
+                                                  builder: (context) => AlertDialog(
+                                                    title: const Text(
+                                                      'Confirmar Exclusão',
+                                                      style: TextStyle(
+                                                        color: Colors.green,
+                                                        fontSize: 35,
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                    content: const Text(
+                                                      'Você tem certeza que deseja excluir este relatório?',
+                                                      style: TextStyle(
+                                                        color: Colors.green,
+                                                        fontSize: 30,
+                                                      ),
+                                                    ),
+                                                    actions: [
+                                                      TextButton(
+                                                        style: TextButton.styleFrom(
+                                                          backgroundColor: Colors.green,
+                                                          minimumSize: const Size(180, 50),
+                                                        ),
+                                                        onPressed: () => Navigator.of(context).pop(false),
+                                                        child: const Text(
+                                                          'Cancelar',
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 30,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      TextButton(
+                                                        style: TextButton.styleFrom(
+                                                          backgroundColor: Colors.green,
+                                                          minimumSize: const Size(180, 50),
+                                                        ),
+                                                        onPressed: () => Navigator.of(context).pop(true),
+                                                        child: const Text(
+                                                          'Excluir',
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 30,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ) ?? false;
+
+                                                if (confirm) {
+                                                  await _deleteReport(doc.id);
+                                                }
                                               },
                                               style: ElevatedButton.styleFrom(
                                                 backgroundColor: Colors.green,
@@ -299,4 +352,24 @@ class _RelatoriosScreenState extends State<RelatoriosScreen> {
       ),
     );
   }
+
+  Future<void> _deleteReport(String documentId) async {
+    try {
+      await _firestore.collection('embalagens').doc(documentId).delete();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Relatório excluído com sucesso.'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erro ao excluir relatório: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
 }
