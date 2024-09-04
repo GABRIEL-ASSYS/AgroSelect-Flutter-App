@@ -3,6 +3,9 @@ import 'package:addcs/view/editar_relatorio.dart';
 import 'package:addcs/view/menu.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 
 class RelatoriosScreen extends StatefulWidget {
   const RelatoriosScreen({super.key});
@@ -13,6 +16,63 @@ class RelatoriosScreen extends StatefulWidget {
 
 class _RelatoriosScreenState extends State<RelatoriosScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<void> _exportToPDF(DocumentSnapshot doc) async {
+    final pdf = pw.Document();
+
+    var fields = doc.data() as Map<String, dynamic>;
+
+    final List<pw.Widget> contentWidgets = [];
+
+    contentWidgets.add(pw.Text('Relatório Exportado',
+      style: pw.TextStyle(fontSize: 40, fontWeight: pw.FontWeight.bold),
+    ));
+
+    contentWidgets.add(pw.SizedBox(height: 20));
+    contentWidgets.add(pw.Text('Aqui estão as informações do relatório:',
+      style: pw.TextStyle(fontSize: 30),
+    ));
+
+    contentWidgets.add(pw.SizedBox(height: 20));
+
+    contentWidgets.addAll(fieldOrder.map((key) {
+      if (fields.containsKey(key)) {
+        return pw.Padding(
+          padding: const pw.EdgeInsets.only(bottom: 8),
+          child: pw.Text(
+            '${fieldLabels[key]}: ${fields[key]}',
+            style: pw.TextStyle(fontSize: 20),
+          ),
+        );
+      } else {
+        return pw.SizedBox.shrink();
+      }
+    }).toList());
+
+    while (contentWidgets.isNotEmpty) {
+      final pageContent = contentWidgets.take(30).toList();
+      contentWidgets.removeRange(0, pageContent.length);
+
+      pdf.addPage(
+        pw.Page(
+          build: (pw.Context context) {
+            return pw.Padding(
+              padding: const pw.EdgeInsets.all(16.0),
+              child: pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: pageContent,
+              ),
+            );
+          },
+        ),
+      );
+    }
+
+    await Printing.layoutPdf(
+      onLayout: (PdfPageFormat format) async => pdf.save(),
+    );
+  }
+
 
   final Map<String, String> fieldLabels = {
     'data': 'Data',
@@ -34,7 +94,7 @@ class _RelatoriosScreenState extends State<RelatoriosScreen> {
     'coex5': 'COEX 5L',
     'coex10': 'COEX 10L',
     'coex20': 'COEX 20L',
-    'tampas': 'Tampas',
+    'tampas': 'Tampas Kg',
     'plasticoMisto1': 'Plástico Misto 1L',
     'plasticoMisto5': 'Plástico Misto 5L',
     'plasticoMisto10': 'Plástico Misto 10L',
@@ -43,14 +103,14 @@ class _RelatoriosScreenState extends State<RelatoriosScreen> {
     'acoContaminado5': 'Aço Contaminado 5L',
     'acoContaminado10': 'Aço Contaminado 10L',
     'acoContaminado20': 'Aço Contaminado 20L',
-    'papelao': 'Papelão',
+    'papelao': 'Papelão Kg',
     '_aluminio250': 'Alumínio 250ml',
     '_aluminio1': 'Alumínio 1L',
     '_aluminio15': 'Alumínio 1.5L',
-    '_aco34': 'Aço 34L',
+    '_aco34': 'Aço 3,4Kg',
     'hidroxido': 'Hidróxido',
     'acoNL': 'Aço Não Lavado',
-    'ibc': 'IBC',
+    'ibc': 'IBC Kg',
     'plasticoQuantidade': 'Quantidade de Plástico',
     'plasticoQuilos': 'Quilos de Plástico',
     'rigida1': 'Rigida 1L',
@@ -311,8 +371,8 @@ class _RelatoriosScreenState extends State<RelatoriosScreen> {
                                             ),
                                             const SizedBox(width: 8),
                                             ElevatedButton(
-                                              onPressed: () {
-                                                // Função de exportação
+                                              onPressed: () async {
+                                                await _exportToPDF(doc);
                                               },
                                               style: ElevatedButton.styleFrom(
                                                 backgroundColor: Colors.green,
