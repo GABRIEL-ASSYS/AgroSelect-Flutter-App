@@ -111,63 +111,84 @@ class _RelatoriosScreenState extends State<RelatoriosScreen> {
       child: Container(
         decoration: AppBackground.boxDecoration,
         child: Scaffold(
-            appBar: AppBar(
-              backgroundColor: AppColors.verde,
-              toolbarHeight: 90,
-              leading: IconButton(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const MenuScreen()
-                    ),
-                  );
-                },
-                icon: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Icon(
-                    Icons.arrow_back,
-                    size: 55,
-                    color: AppColors.branco,
+          appBar: AppBar(
+            backgroundColor: AppColors.verde,
+            toolbarHeight: 90,
+            leading: IconButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MenuScreen(),
                   ),
+                );
+              },
+              icon: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Icon(
+                  Icons.arrow_back,
+                  size: 55,
+                  color: AppColors.branco,
                 ),
               ),
             ),
-            body: StreamBuilder<QuerySnapshot>(
-              stream: _firestore.collection('embalagens').snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator(),);
-                }
-                if (snapshot.hasError) {
-                  return Center(child: Text('Erro ao carregar dados ${snapshot.error}'));
-                }
-                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return const Center(child: Text('Nenhum dado encontrado'));
-                }
+          ),
+          body: StreamBuilder<QuerySnapshot>(
+            stream: _firestore.collection('embalagens').snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text('Erro ao carregar dados ${snapshot.error}'),
+                );
+              }
+              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                return const Center(child: Text('Nenhum dado encontrado'));
+              }
 
-                var data = snapshot.data!.docs;
+              var data = snapshot.data!.docs;
 
-                return Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: data.map((doc) {
-                        var fields = doc.data() as Map<String, dynamic>;
+              return Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: data.map((doc) {
+                      var fields = doc.data() as Map<String, dynamic>;
 
-                        return Center(
-                          child: SizedBox(
-                            width: 600,
-                            child: Card(
-                              margin: const EdgeInsets.all(10),
-                              child: Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: fieldOrder.map((key) {
+                      var nome = fields['produtor'] ?? 'Desconhecido';
+                      var data = fields['data'] ?? '';
+                      var hora = fields['hora'] ?? '';
+
+                      return Center(
+                        child: SizedBox(
+                          width: 600,
+                          child: Card(
+                            margin: const EdgeInsets.all(10),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 8),
+                                    child: Text(
+                                      'Relatório $nome - $data - $hora',
+                                      style: const TextStyle(
+                                        fontSize: 35,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.green,
+                                      ),
+                                    ),
+                                  ),
+                                  ...fieldOrder.map((key) {
                                     if (fields.containsKey(key)) {
                                       return Padding(
-                                        padding: const EdgeInsets.only(bottom: 8),
+                                        padding:
+                                        const EdgeInsets.only(bottom: 8),
                                         child: Text(
                                           '${fieldLabels[key]}: ${fields[key]}',
                                           style: const TextStyle(
@@ -180,17 +201,18 @@ class _RelatoriosScreenState extends State<RelatoriosScreen> {
                                       return const SizedBox.shrink();
                                     }
                                   }).toList(),
-                                ),
+                                ],
                               ),
                             ),
                           ),
-                        );
-                      }).toList(),
-                    ),
+                        ),
+                      );
+                    }).toList(),
                   ),
-                );
-              },
-            )
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
