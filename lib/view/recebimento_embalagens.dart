@@ -1,6 +1,7 @@
 import 'package:addcs/themes.dart';
 import 'package:addcs/view/components/primary_button.dart';
 import 'package:addcs/view/menu.dart';
+import 'package:addcs/view/relatorios.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -1159,7 +1160,7 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                               );
                               Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(builder: (context) => const MenuScreen()),
+                                MaterialPageRoute(builder: (context) => const RelatoriosScreen()),
                               );
                             } catch (e) {
                               Fluttertoast.showToast(
