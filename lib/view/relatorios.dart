@@ -17,6 +17,18 @@ class RelatoriosScreen extends StatefulWidget {
 class _RelatoriosScreenState extends State<RelatoriosScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  Future<void> _toggleFavorite(DocumentSnapshot doc) async {
+    Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?;
+    bool isFavorito = data?['favorito'] ?? false;
+
+    await _firestore.collection('embalagens').doc(doc.id).update({
+      'favorito': !isFavorito,
+    });
+
+    setState(() {
+    });
+  }
+
   Future<void> _exportToPDF(DocumentSnapshot doc) async {
     final pdf = pw.Document();
 
@@ -234,13 +246,36 @@ class _RelatoriosScreenState extends State<RelatoriosScreen> {
                           child: Card(
                             margin: const EdgeInsets.all(10),
                             child: ExpansionTile(
-                              title: Text(
-                                'Relatório $nome - $data - $hora',
-                                style: const TextStyle(
-                                  fontSize: 35,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.green,
-                                ),
+                              title: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      'Relatório $nome - $data - $hora',
+                                      style: const TextStyle(
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.green,
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: IconButton(
+                                      icon: Icon(
+                                        fields['favorito'] == true ? Icons.star : Icons.star_border,
+                                        size: 35,
+                                        color: Colors.yellow,
+                                      ),
+                                      onPressed: () async {
+                                        await _toggleFavorite(doc);
+                                        setState(() {
+                                          fields['favorito'] = !fields['favorito'];
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ],
                               ),
                               children: [
                                 Padding(
@@ -251,8 +286,7 @@ class _RelatoriosScreenState extends State<RelatoriosScreen> {
                                       ...fieldOrder.map((key) {
                                         if (fields.containsKey(key)) {
                                           return Padding(
-                                            padding:
-                                            const EdgeInsets.only(bottom: 8),
+                                            padding: const EdgeInsets.only(bottom: 8),
                                             child: Text(
                                               '${fieldLabels[key]}: ${fields[key]}',
                                               style: const TextStyle(
@@ -325,7 +359,8 @@ class _RelatoriosScreenState extends State<RelatoriosScreen> {
                                                           backgroundColor: Colors.green,
                                                           minimumSize: const Size(180, 50),
                                                         ),
-                                                        onPressed: () => Navigator.of(context).pop(false),
+                                                        onPressed: () =>
+                                                            Navigator.of(context).pop(false),
                                                         child: const Text(
                                                           'Cancelar',
                                                           style: TextStyle(
@@ -339,7 +374,8 @@ class _RelatoriosScreenState extends State<RelatoriosScreen> {
                                                           backgroundColor: Colors.green,
                                                           minimumSize: const Size(180, 50),
                                                         ),
-                                                        onPressed: () => Navigator.of(context).pop(true),
+                                                        onPressed: () =>
+                                                            Navigator.of(context).pop(true),
                                                         child: const Text(
                                                           'Excluir',
                                                           style: TextStyle(
@@ -350,7 +386,8 @@ class _RelatoriosScreenState extends State<RelatoriosScreen> {
                                                       ),
                                                     ],
                                                   ),
-                                                ) ?? false;
+                                                ) ??
+                                                    false;
 
                                                 if (confirm) {
                                                   await _deleteReport(doc.id);
