@@ -89,16 +89,65 @@ class _LoginScreenState extends State<LoginScreen> {
                             padding: const EdgeInsets.only(bottom: 30.0),
                             child: TextButton(
                               style: TextButton.styleFrom(
-                                padding:
-                                const EdgeInsets.symmetric(vertical: 8.0),
+                                padding: const EdgeInsets.symmetric(vertical: 8.0),
                               ),
-                              onPressed: () {},
-                              child: Text(
-                                "Esqueci a minha senha",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: AppColors.verde,
-                                  decoration: TextDecoration.underline,
+                              onPressed: () async {
+                                if (_emailController.text.isEmpty) {
+                                  Fluttertoast.showToast(
+                                    msg: "Por favor, insira seu e-mail.",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    fontSize: 25,
+                                    timeInSecForIosWeb: 3,
+                                  );
+                                  return;
+                                }
+
+                                try {
+                                  await FirebaseAuth.instance.sendPasswordResetEmail(
+                                    email: _emailController.text,
+                                  );
+
+                                  Fluttertoast.showToast(
+                                    msg: "E-mail de redefinição de senha enviado.",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    fontSize: 25,
+                                    timeInSecForIosWeb: 3,
+                                  );
+                                } catch (e) {
+                                  String errorMessage;
+                                  if (e is FirebaseAuthException) {
+                                    switch (e.code) {
+                                      case 'user-not-found':
+                                        errorMessage = 'E-mail não cadastrado.';
+                                        break;
+                                      default:
+                                        errorMessage = 'Erro ao enviar o e-mail. Tente novamente.';
+                                        break;
+                                    }
+                                  } else {
+                                    errorMessage = 'Ocorreu um erro. Tente novamente.';
+                                  }
+
+                                  Fluttertoast.showToast(
+                                    msg: errorMessage,
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    fontSize: 25,
+                                    timeInSecForIosWeb: 3,
+                                  );
+                                }
+                              },
+                              child: RichText(
+                                text: TextSpan(
+                                  text: "Esqueci a minha senha",
+                                  style: TextStyle(
+                                    fontSize: 25,
+                                    color: AppColors.verde,
+                                    decoration: TextDecoration.underline,
+                                    decorationColor: Colors.green,
+                                  ),
                                 ),
                               ),
                             ),

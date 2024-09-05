@@ -10,7 +10,7 @@ abstract class PrimaryButtonProperties {
 
   static TextStyle textStyle = TextStyle(
     color: AppColors.branco,
-    fontSize: 20,
+    fontSize: 30,
     fontWeight: FontWeight.w600,
   );
 

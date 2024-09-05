@@ -2,6 +2,8 @@ import 'package:addcs/services/auth_service.dart';
 import 'package:addcs/themes.dart';
 import 'package:addcs/view/components/primary_button.dart';
 import 'package:addcs/view/login.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -21,6 +23,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
   final TextEditingController _senhaController = TextEditingController();
 
   final AuthService _authService = AuthService();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -151,44 +154,54 @@ class _CadastroScreenState extends State<CadastroScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      PrimaryButton(text: 'Cadastrar', onTap: () async {
-                        if (_formKey.currentState!.validate()) {
-                          try {
-                            await _authService.cadastroUsuario(
-                              nome: _nomeController.text,
-                              email: _emailController.text,
-                              senha: _passwordController.text,
-                            );
+                      PrimaryButton(
+                        text: 'Cadastrar',
+                        onTap: () async {
+                          if (_formKey.currentState!.validate()) {
+                            try {
+                              UserCredential userCredential = await _authService.cadastroUsuario(
+                                nome: _nomeController.text,
+                                email: _emailController.text,
+                                senha: _passwordController.text,
+                              );
+
+                              await _firestore.collection('users').doc(userCredential.user!.uid).set({
+                                'nome': _nomeController.text,
+                                'email': _emailController.text,
+                              });
+
+                              Fluttertoast.showToast(
+                                msg: "Cadastro realizado com sucesso!",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                fontSize: 25,
+                                timeInSecForIosWeb: 3,
+                              );
+
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (context) => const LoginScreen()),
+                              );
+                            } catch (e) {
+                              Fluttertoast.showToast(
+                                msg: e.toString(),
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                fontSize: 25,
+                                timeInSecForIosWeb: 3,
+                              );
+                            }
+                          } else {
                             Fluttertoast.showToast(
-                              msg: "Cadastro realizado com sucesso!",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.BOTTOM,
-                              fontSize: 25,
-                              timeInSecForIosWeb: 3,
-                            );
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(builder: (context) => const LoginScreen()),
-                            );
-                          } catch (e) {
-                            Fluttertoast.showToast(
-                              msg: e.toString(),
+                              msg: "Por favor, preencha todos os campos corretamente.",
                               toastLength: Toast.LENGTH_SHORT,
                               gravity: ToastGravity.BOTTOM,
                               fontSize: 25,
                               timeInSecForIosWeb: 3,
                             );
                           }
-                        } else {
-                          Fluttertoast.showToast(
-                            msg: "Por favor, preencha todos os campos corretamente.",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.BOTTOM,
-                            fontSize: 25,
-                            timeInSecForIosWeb: 3,
-                          );
-                        }
-                      }),
+                        },
+                      ),
                     ],
                   ),
                 ],
