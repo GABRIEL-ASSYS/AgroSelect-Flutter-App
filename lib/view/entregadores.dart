@@ -14,6 +14,23 @@ class EntregadoresScreen extends StatefulWidget {
 class _EntregadoresScreenState extends State<EntregadoresScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  Future<void> _toggleFavorite(DocumentSnapshot doc) async {
+    try {
+      bool isFavorito = doc['favorito'] ?? false;
+      await _firestore.collection('entregadores').doc(doc.id).update({
+        'favorito': !isFavorito,
+      });
+      setState(() {});
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erro ao atualizar favorito: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   Future<void> _deleteEntregador(String documentId) async {
     try {
       await _firestore.collection('entregadores').doc(documentId).delete();
@@ -94,13 +111,28 @@ class _EntregadoresScreenState extends State<EntregadoresScreen> {
                   return Card(
                     margin: const EdgeInsets.all(10),
                     child: ExpansionTile(
-                      title: Text(
-                        fields['nome'] ?? 'Desconhecido',
-                        style: const TextStyle(
-                          fontSize: 35,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.green,
-                        ),
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            fields['nome'] ?? 'Desconhecido',
+                            style: const TextStyle(
+                              fontSize: 35,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green,
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              fields['favorito'] == true ? Icons.star : Icons.star_border,
+                              size: 35,
+                              color: Colors.yellow,
+                            ),
+                            onPressed: () {
+                              _toggleFavorite(doc);
+                            },
+                          ),
+                        ],
                       ),
                       children: [
                         Padding(
