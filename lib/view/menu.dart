@@ -39,20 +39,23 @@ class MenuScreen extends StatelessWidget {
               ),
             ),
             actions: <Widget>[
-              IconButton(
-                icon: Icon(
-                  Icons.account_circle,
-                  size: 55,
-                  color: AppColors.branco,
+              Padding(
+                padding: const EdgeInsets.only(right:16.0),
+                child: IconButton(
+                  icon: Icon(
+                    Icons.account_circle,
+                    size: 55,
+                    color: AppColors.branco,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const PerfilScreen(),
+                      ),
+                    );
+                  },
                 ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const PerfilScreen(),
-                    ),
-                  );
-                },
               ),
             ],
           ),
