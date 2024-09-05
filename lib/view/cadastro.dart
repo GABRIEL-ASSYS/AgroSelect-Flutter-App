@@ -159,32 +159,43 @@ class _CadastroScreenState extends State<CadastroScreen> {
                         onTap: () async {
                           if (_formKey.currentState!.validate()) {
                             try {
+                              // Cadastra o usuário
                               UserCredential userCredential = await _authService.cadastroUsuario(
                                 nome: _nomeController.text,
                                 email: _emailController.text,
                                 senha: _passwordController.text,
                               );
 
-                              await _firestore.collection('users').doc(userCredential.user!.uid).set({
-                                'nome': _nomeController.text,
-                                'email': _emailController.text,
-                              });
+                              if (userCredential.user != null) {
+                                await _firestore.collection('users').doc(userCredential.user!.uid).set({
+                                  'nome': _nomeController.text,
+                                  'email': _emailController.text,
+                                });
 
-                              Fluttertoast.showToast(
-                                msg: "Cadastro realizado com sucesso!",
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.BOTTOM,
-                                fontSize: 25,
-                                timeInSecForIosWeb: 3,
-                              );
+                                Fluttertoast.showToast(
+                                  msg: "Cadastro realizado com sucesso!",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  fontSize: 25,
+                                  timeInSecForIosWeb: 3,
+                                );
 
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(builder: (context) => const LoginScreen()),
-                              );
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                                );
+                              } else {
+                                Fluttertoast.showToast(
+                                  msg: "Erro ao criar usuário.",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  fontSize: 25,
+                                  timeInSecForIosWeb: 3,
+                                );
+                              }
                             } catch (e) {
                               Fluttertoast.showToast(
-                                msg: e.toString(),
+                                msg: 'Erro: ${e.toString()}',
                                 toastLength: Toast.LENGTH_SHORT,
                                 gravity: ToastGravity.BOTTOM,
                                 fontSize: 25,

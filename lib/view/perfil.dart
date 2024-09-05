@@ -1,0 +1,488 @@
+import 'package:addcs/view/menu.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
+class PerfilScreen extends StatefulWidget {
+  const PerfilScreen({super.key});
+
+  @override
+  State<PerfilScreen> createState() => _PerfilScreenState();
+}
+
+class _PerfilScreenState extends State<PerfilScreen> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  User? _user;
+  String _nome = '';
+  String _email = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _user = _auth.currentUser;
+    if (_user != null) {
+      _fetchUserData();
+    }
+  }
+
+  Future<void> _fetchUserData() async {
+    try {
+      DocumentSnapshot userDoc = await _firestore.collection('users').doc(_user!.uid).get();
+      if (userDoc.exists) {
+        setState(() {
+          _nome = userDoc['nome'] ?? 'Nome não disponível';
+          _email = userDoc['email'] ?? 'E-mail não disponível';
+        });
+      }
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Erro ao carregar dados do usuário.",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        fontSize: 25,
+        timeInSecForIosWeb: 3,
+      );
+    }
+  }
+
+  Future<void> _alterarEmail() async {
+    final TextEditingController _novoEmailController = TextEditingController();
+    final TextEditingController _senhaController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Alterar E-mail',
+            style: TextStyle(
+              color: Colors.green,
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              TextField(
+                controller: _novoEmailController,
+                decoration: const InputDecoration(
+                  labelText: 'Novo E-mail',
+                  labelStyle: TextStyle(
+                    color: Colors.green,
+                    fontSize: 18,
+                  ),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.green,
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.green,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.green,
+                    ),
+                  ),
+                ),
+                style: const TextStyle(
+                  fontSize: 20,
+                  color: Colors.black,
+                ),
+                keyboardType: TextInputType.emailAddress,
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                controller: _senhaController,
+                decoration: const InputDecoration(
+                  labelText: 'Senha Atual',
+                  labelStyle: TextStyle(
+                    color: Colors.green,
+                    fontSize: 18,
+                  ),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.green,
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.green,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.green,
+                    ),
+                  ),
+                ),
+                style: const TextStyle(
+                  fontSize: 20,
+                  color: Colors.black,
+                ),
+                obscureText: true,
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.green,
+                minimumSize: const Size(100, 50),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'Cancelar',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                ),
+              ),
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.green,
+                minimumSize: const Size(100, 50),
+              ),
+              onPressed: () async {
+                String novoEmail = _novoEmailController.text;
+                String senha = _senhaController.text;
+
+                if (novoEmail.isEmpty || senha.isEmpty) {
+                  Fluttertoast.showToast(
+                    msg: "Por favor, insira o novo e-mail e a senha atual.",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    fontSize: 25,
+                    timeInSecForIosWeb: 3,
+                  );
+                  return;
+                }
+
+                try {
+                  AuthCredential credential = EmailAuthProvider.credential(
+                    email: _user!.email!,
+                    password: senha,
+                  );
+                  await _user!.reauthenticateWithCredential(credential);
+
+                  await _user!.updateEmail(novoEmail);
+                  await _user!.reload();
+                  _user = _auth.currentUser;
+
+                  await _firestore.collection('users').doc(_user!.uid).update({'email': novoEmail});
+
+                  Fluttertoast.showToast(
+                    msg: "E-mail alterado com sucesso.",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    fontSize: 25,
+                    timeInSecForIosWeb: 3,
+                  );
+                } catch (e) {
+                  Fluttertoast.showToast(
+                    msg: "Erro ao alterar e-mail: $e",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    fontSize: 25,
+                    timeInSecForIosWeb: 3,
+                  );
+                }
+
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'Confirmar',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _alterarSenha() async {
+    final TextEditingController _senhaAtualController = TextEditingController();
+    final TextEditingController _novaSenhaController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Alterar Senha',
+            style: TextStyle(
+              color: Colors.green,
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              TextField(
+                controller: _senhaAtualController,
+                decoration: const InputDecoration(
+                  labelText: 'Senha Atual',
+                  labelStyle: TextStyle(
+                    color: Colors.green,
+                    fontSize: 18,
+                  ),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.green,
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.green,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.green,
+                    ),
+                  ),
+                ),
+                style: const TextStyle(
+                  fontSize: 20,
+                  color: Colors.black,
+                ),
+                obscureText: true,
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                controller: _novaSenhaController,
+                decoration: const InputDecoration(
+                  labelText: 'Nova Senha',
+                  labelStyle: TextStyle(
+                    color: Colors.green,
+                    fontSize: 18,
+                  ),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.green,
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.green,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.green,
+                    ),
+                  ),
+                ),
+                style: const TextStyle(
+                  fontSize: 20,
+                  color: Colors.black,
+                ),
+                obscureText: true,
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.green,
+                minimumSize: const Size(100, 50),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'Cancelar',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                ),
+              ),
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.green,
+                minimumSize: const Size(100, 50),
+              ),
+              onPressed: () async {
+                String senhaAtual = _senhaAtualController.text;
+                String novaSenha = _novaSenhaController.text;
+
+                if (senhaAtual.isEmpty || novaSenha.isEmpty) {
+                  Fluttertoast.showToast(
+                    msg: "Por favor, insira a senha atual e a nova senha.",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    fontSize: 25,
+                    timeInSecForIosWeb: 3,
+                  );
+                  return;
+                }
+
+                try {
+                  AuthCredential credential = EmailAuthProvider.credential(
+                    email: _user!.email!,
+                    password: senhaAtual,
+                  );
+                  await _user!.reauthenticateWithCredential(credential);
+
+                  await _user!.updatePassword(novaSenha);
+
+                  Fluttertoast.showToast(
+                    msg: "Senha alterada com sucesso.",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    fontSize: 25,
+                    timeInSecForIosWeb: 3,
+                  );
+                } catch (e) {
+                  Fluttertoast.showToast(
+                    msg: "Erro ao alterar senha: $e",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    fontSize: 25,
+                    timeInSecForIosWeb: 3,
+                  );
+                }
+
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'Confirmar',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _verificarEmail() async {
+    if (_user != null) {
+      try {
+        await _user!.sendEmailVerification();
+        Fluttertoast.showToast(
+          msg: "E-mail de verificação enviado.",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          fontSize: 25,
+          timeInSecForIosWeb: 3,
+        );
+      } catch (e) {
+        Fluttertoast.showToast(
+          msg: "Erro ao enviar e-mail de verificação.",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          fontSize: 25,
+          timeInSecForIosWeb: 3,
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.green,
+        toolbarHeight: 90,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const MenuScreen()
+              ),
+            );
+          },
+          icon: const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Icon(
+              Icons.arrow_back,
+              size: 55,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            CircleAvatar(
+              radius: 120,
+              backgroundColor: Colors.grey[300],
+              child: Icon(
+                Icons.person,
+                size: 150,
+                color: Colors.grey[700],
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              _nome,
+              style: const TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              _email,
+              style: TextStyle(fontSize: 25, color: Colors.grey[600]),
+            ),
+            const SizedBox(height: 30),
+            TextButton(
+              onPressed: _alterarEmail,
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.green,
+              ),
+              child: const Text(
+                'Alterar E-mail',
+                style: TextStyle(
+                  fontSize: 25,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: _verificarEmail,
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.green,
+              ),
+              child: const Text(
+                'Verificar E-mail',
+                style: TextStyle(
+                  fontSize: 25,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: _alterarSenha,
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.green,
+              ),
+              child: const Text(
+                'Alterar Senha',
+                style: TextStyle(
+                  fontSize: 25,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
