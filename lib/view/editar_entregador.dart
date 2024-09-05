@@ -44,17 +44,32 @@ class _EditarEntregadorScreenState extends State<EditarEntregadorScreen> {
   }
 
   Future<void> _loadData() async {
-    var doc = await _firestore.collection('entregadores').doc(widget.documentId).get();
-    if (doc.exists) {
-      var data = doc.data() as Map<String, dynamic>;
+    try {
+      var doc = await _firestore.collection('entregadores').doc(widget.documentId).get();
 
-      fieldOrder.forEach((key) {
-        if (data.containsKey(key)) {
-          _controllers[key]?.text = data[key] ?? '';
-        }
-      });
+      if (doc.exists) {
+        var data = doc.data() as Map<String, dynamic>;
 
-      setState(() {});
+        fieldOrder.forEach((key) {
+          _controllers[key]?.text = data[key]?.toString() ?? '';
+        });
+
+        setState(() {});
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Erro: Documento não encontrado.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erro ao carregar dados: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
