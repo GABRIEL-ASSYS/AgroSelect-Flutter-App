@@ -50,6 +50,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
   Future<void> _alterarEmail() async {
     final TextEditingController _novoEmailController = TextEditingController();
     final TextEditingController _senhaController = TextEditingController();
+    bool _obscureSenha = true;
 
     showDialog(
       context: context,
@@ -99,33 +100,44 @@ class _PerfilScreenState extends State<PerfilScreen> {
               const SizedBox(height: 20),
               TextField(
                 controller: _senhaController,
-                decoration: const InputDecoration(
+                obscureText: _obscureSenha,
+                decoration: InputDecoration(
                   labelText: 'Senha Atual',
-                  labelStyle: TextStyle(
+                  labelStyle: const TextStyle(
                     color: Colors.green,
                     fontSize: 18,
                   ),
-                  border: OutlineInputBorder(
+                  border: const OutlineInputBorder(
                     borderSide: BorderSide(
                       color: Colors.green,
                     ),
                   ),
-                  enabledBorder: OutlineInputBorder(
+                  enabledBorder: const OutlineInputBorder(
                     borderSide: BorderSide(
                       color: Colors.green,
                     ),
                   ),
-                  focusedBorder: OutlineInputBorder(
+                  focusedBorder: const OutlineInputBorder(
                     borderSide: BorderSide(
                       color: Colors.green,
                     ),
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscureSenha ? Icons.visibility_off : Icons.visibility,
+                      color: Colors.green,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscureSenha = !_obscureSenha;
+                      });
+                    },
                   ),
                 ),
                 style: const TextStyle(
                   fontSize: 20,
                   color: Colors.black,
                 ),
-                obscureText: true,
               ),
             ],
           ),
@@ -215,6 +227,8 @@ class _PerfilScreenState extends State<PerfilScreen> {
   Future<void> _alterarSenha() async {
     final TextEditingController _senhaAtualController = TextEditingController();
     final TextEditingController _novaSenhaController = TextEditingController();
+    bool _obscureSenhaAtual = true;
+    bool _obscureNovaSenha = true;
 
     showDialog(
       context: context,
@@ -233,64 +247,86 @@ class _PerfilScreenState extends State<PerfilScreen> {
             children: <Widget>[
               TextField(
                 controller: _senhaAtualController,
-                decoration: const InputDecoration(
+                obscureText: _obscureSenhaAtual,
+                decoration: InputDecoration(
                   labelText: 'Senha Atual',
-                  labelStyle: TextStyle(
+                  labelStyle: const TextStyle(
                     color: Colors.green,
                     fontSize: 18,
                   ),
-                  border: OutlineInputBorder(
+                  border: const OutlineInputBorder(
                     borderSide: BorderSide(
                       color: Colors.green,
                     ),
                   ),
-                  enabledBorder: OutlineInputBorder(
+                  enabledBorder: const OutlineInputBorder(
                     borderSide: BorderSide(
                       color: Colors.green,
                     ),
                   ),
-                  focusedBorder: OutlineInputBorder(
+                  focusedBorder: const OutlineInputBorder(
                     borderSide: BorderSide(
                       color: Colors.green,
                     ),
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscureSenhaAtual ? Icons.visibility_off : Icons.visibility,
+                      color: Colors.green,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscureSenhaAtual = !_obscureSenhaAtual;
+                      });
+                    },
                   ),
                 ),
                 style: const TextStyle(
                   fontSize: 20,
                   color: Colors.black,
                 ),
-                obscureText: true,
               ),
               const SizedBox(height: 20),
               TextField(
                 controller: _novaSenhaController,
-                decoration: const InputDecoration(
+                obscureText: _obscureNovaSenha,
+                decoration: InputDecoration(
                   labelText: 'Nova Senha',
-                  labelStyle: TextStyle(
+                  labelStyle: const TextStyle(
                     color: Colors.green,
                     fontSize: 18,
                   ),
-                  border: OutlineInputBorder(
+                  border: const OutlineInputBorder(
                     borderSide: BorderSide(
                       color: Colors.green,
                     ),
                   ),
-                  enabledBorder: OutlineInputBorder(
+                  enabledBorder: const OutlineInputBorder(
                     borderSide: BorderSide(
                       color: Colors.green,
                     ),
                   ),
-                  focusedBorder: OutlineInputBorder(
+                  focusedBorder: const OutlineInputBorder(
                     borderSide: BorderSide(
                       color: Colors.green,
                     ),
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscureNovaSenha ? Icons.visibility_off : Icons.visibility,
+                      color: Colors.green,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscureNovaSenha = !_obscureNovaSenha;
+                      });
+                    },
                   ),
                 ),
                 style: const TextStyle(
                   fontSize: 20,
                   color: Colors.black,
                 ),
-                obscureText: true,
               ),
             ],
           ),
