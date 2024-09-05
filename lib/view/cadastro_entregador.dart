@@ -1,5 +1,6 @@
 import 'package:addcs/themes.dart';
 import 'package:addcs/view/components/primary_button.dart';
+import 'package:addcs/view/entregadores.dart';
 import 'package:addcs/view/menu.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -240,7 +241,7 @@ class _CadastroEntregadorScreenState extends State<CadastroEntregadorScreen> {
                               );
                               Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(builder: (context) => const MenuScreen()),
+                                MaterialPageRoute(builder: (context) => const EntregadoresScreen()),
                               );
                             } catch (e) {
                               Fluttertoast.showToast(
