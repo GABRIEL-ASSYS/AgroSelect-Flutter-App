@@ -1,11 +1,10 @@
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:addcs/services/auth_service.dart';
 import 'package:addcs/view/cadastro.dart';
 import 'package:addcs/view/menu.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:addcs/themes.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-
 import 'components/primary_button.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -22,6 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _senhaController = TextEditingController();
 
   final AuthService _authService = AuthService();
+  bool _obscureText = true;
 
   @override
   Widget build(BuildContext context) {
@@ -72,18 +72,38 @@ class _LoginScreenState extends State<LoginScreen> {
                               },
                             ),
                           ),
-                          TextFormField(
-                            controller: _senhaController,
-                            style: AppInputs.textDecoration,
-                            decoration:
-                            AppInputs.newInputDecoration("******", "Senha"),
-                            obscureText: true,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Por favor, insira sua senha';
-                              }
-                              return null;
-                            },
+                          Stack(
+                            children: [
+                              TextFormField(
+                                controller: _senhaController,
+                                style: AppInputs.textDecoration,
+                                decoration: AppInputs.newInputDecoration(
+                                    "******", "Senha"),
+                                obscureText: _obscureText,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Por favor, insira sua senha';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              Positioned(
+                                right: 0,
+                                top: 0,
+                                bottom: 0,
+                                child: IconButton(
+                                  icon: Icon(
+                                    _obscureText ? Icons.visibility : Icons.visibility_off,
+                                    color: Colors.grey,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _obscureText = !_obscureText;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
                           Padding(
                             padding: const EdgeInsets.only(bottom: 30.0),
