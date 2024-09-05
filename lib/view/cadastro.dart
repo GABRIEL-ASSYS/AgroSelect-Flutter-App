@@ -25,6 +25,9 @@ class _CadastroScreenState extends State<CadastroScreen> {
   final AuthService _authService = AuthService();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -107,43 +110,83 @@ class _CadastroScreenState extends State<CadastroScreen> {
                           ),
                           Padding(
                             padding: const EdgeInsets.only(bottom: 30.0),
-                            child: TextFormField(
-                              controller: _passwordController,
-                              style: AppInputs.textDecoration,
-                              decoration: AppInputs.newInputDecoration(
-                                  "******", "Senha"),
-                              obscureText: true,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Por favor, insira sua senha';
-                                }
-                                if (value.length < 8) {
-                                  return 'A senha deve ter pelo menos 8 caracteres';
-                                }
-                                if (!value.contains(RegExp(r'[A-Z]'))) {
-                                  return 'A senha deve conter pelo menos uma letra maiúscula';
-                                }
-                                return null;
-                              },
+                            child: Stack(
+                              children: [
+                                TextFormField(
+                                  controller: _passwordController,
+                                  style: AppInputs.textDecoration,
+                                  decoration: AppInputs.newInputDecoration(
+                                      "******", "Senha"),
+                                  obscureText: _obscurePassword,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, insira sua senha';
+                                    }
+                                    if (value.length < 8) {
+                                      return 'A senha deve ter pelo menos 8 caracteres';
+                                    }
+                                    if (!value.contains(RegExp(r'[A-Z]'))) {
+                                      return 'A senha deve conter pelo menos uma letra maiúscula';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                Positioned(
+                                  right: 0,
+                                  top: 0,
+                                  bottom: 0,
+                                  child: IconButton(
+                                    icon: Icon(
+                                      _obscurePassword ? Icons.visibility : Icons.visibility_off,
+                                      color: Colors.grey,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _obscurePassword = !_obscurePassword;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(bottom: 30.0),
-                            child: TextFormField(
-                              controller: _senhaController,
-                              style: AppInputs.textDecoration,
-                              decoration: AppInputs.newInputDecoration(
-                                  "******", "Confirme a Senha"),
-                              obscureText: true,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Por favor, confirme sua senha';
-                                }
-                                if (value != _passwordController.text) {
-                                  return 'As senhas não coincidem';
-                                }
-                                return null;
-                              },
+                            child: Stack(
+                              children: [
+                                TextFormField(
+                                  controller: _senhaController,
+                                  style: AppInputs.textDecoration,
+                                  decoration: AppInputs.newInputDecoration(
+                                      "******", "Confirme a Senha"),
+                                  obscureText: _obscureConfirmPassword,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Por favor, confirme sua senha';
+                                    }
+                                    if (value != _passwordController.text) {
+                                      return 'As senhas não coincidem';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                Positioned(
+                                  right: 0,
+                                  top: 0,
+                                  bottom: 0,
+                                  child: IconButton(
+                                    icon: Icon(
+                                      _obscureConfirmPassword ? Icons.visibility : Icons.visibility_off,
+                                      color: Colors.grey,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _obscureConfirmPassword = !_obscureConfirmPassword;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
@@ -159,7 +202,6 @@ class _CadastroScreenState extends State<CadastroScreen> {
                         onTap: () async {
                           if (_formKey.currentState!.validate()) {
                             try {
-                              // Cadastra o usuário
                               UserCredential userCredential = await _authService.cadastroUsuario(
                                 nome: _nomeController.text,
                                 email: _emailController.text,
