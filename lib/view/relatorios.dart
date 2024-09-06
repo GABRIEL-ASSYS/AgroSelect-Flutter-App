@@ -1,5 +1,6 @@
 import 'package:addcs/themes.dart';
 import 'package:addcs/view/editar_relatorio.dart';
+import 'package:addcs/view/favoritos_relatorios.dart';
 import 'package:addcs/view/menu.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -209,6 +210,26 @@ class _RelatoriosScreenState extends State<RelatoriosScreen> {
                 ),
               ),
             ),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 12.0),
+                child: IconButton(
+                  icon: Icon(
+                    Icons.star,
+                    color: AppColors.branco,
+                    size: 45,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const FavoritosRelatoriosScreen(),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
           body: StreamBuilder<QuerySnapshot>(
             stream: _firestore.collection('embalagens').snapshots(),
