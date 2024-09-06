@@ -22,6 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final AuthService _authService = AuthService();
   bool _obscureText = true;
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +32,9 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Scaffold(
           backgroundColor: Colors.transparent,
           body: Center(
-            child: SingleChildScrollView(
+            child: _isLoading
+              ? const CircularProgressIndicator()
+              : SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -182,6 +185,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       PrimaryButton(text: 'Entrar', onTap: () async {
                         if (_formKey.currentState!.validate()) {
+                          setState(() {
+                            _isLoading = true;
+                          });
+
                           try {
                             await _authService.loginUsuario(
                               email: _emailController.text,
@@ -219,6 +226,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
                           }
                         } else {
+                          setState(() {
+                            _isLoading = false;
+                          });
+
                           Fluttertoast.showToast(
                             msg: "Por favor, preencha todos os campos corretamente.",
                             toastLength: Toast.LENGTH_SHORT,
