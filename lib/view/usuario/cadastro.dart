@@ -141,7 +141,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
                                   child: IconButton(
                                     icon: Icon(
                                       _obscurePassword ? Icons.visibility : Icons.visibility_off,
-                                      color: Colors.grey,
+                                      color: Colors.green,
                                     ),
                                     onPressed: () {
                                       setState(() {
@@ -180,7 +180,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
                                   child: IconButton(
                                     icon: Icon(
                                       _obscureConfirmPassword ? Icons.visibility : Icons.visibility_off,
-                                      color: Colors.grey,
+                                      color: Colors.green,
                                     ),
                                     onPressed: () {
                                       setState(() {
