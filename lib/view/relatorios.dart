@@ -8,6 +8,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
+
 class RelatoriosScreen extends StatefulWidget {
   const RelatoriosScreen({super.key});
 
@@ -16,6 +17,7 @@ class RelatoriosScreen extends StatefulWidget {
 }
 
 class _RelatoriosScreenState extends State<RelatoriosScreen> {
+
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> _toggleFavorite(DocumentSnapshot doc) async {
@@ -231,244 +233,246 @@ class _RelatoriosScreenState extends State<RelatoriosScreen> {
               ),
             ],
           ),
-          body: StreamBuilder<QuerySnapshot>(
-            stream: _firestore.collection('embalagens').snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-              if (snapshot.hasError) {
-                return Center(
-                  child: Text('Erro ao carregar dados ${snapshot.error}'),
-                );
-              }
-              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                return const Center(child: Text('Nenhum dado encontrado'));
-              }
+          body: Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: _firestore.collection('embalagens').snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text('Erro ao carregar dados ${snapshot.error}'),
+                  );
+                }
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return const Center(child: Text('Nenhum dado encontrado'));
+                }
 
-              var data = snapshot.data!.docs;
+                var data = snapshot.data!.docs;
 
-              return Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: data.map((doc) {
-                      var fields = doc.data() as Map<String, dynamic>;
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: data.map((doc) {
+                        var fields = doc.data() as Map<String, dynamic>;
 
-                      var nome = fields['produtor'] ?? 'Desconhecido';
-                      var data = fields['data'] ?? '';
-                      var hora = fields['hora'] ?? '';
+                        var nome = fields['produtor'] ?? 'Desconhecido';
+                        var data = fields['data'] ?? '';
+                        var hora = fields['hora'] ?? '';
 
-                      return Center(
-                        child: SizedBox(
-                          width: 600,
-                          child: Card(
-                            margin: const EdgeInsets.all(10),
-                            child: ExpansionTile(
-                              title: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      'Relatório $nome - $data - $hora',
-                                      style: const TextStyle(
-                                        fontSize: 30,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.green,
+                        return Center(
+                          child: SizedBox(
+                            width: 600,
+                            child: Card(
+                              margin: const EdgeInsets.all(10),
+                              child: ExpansionTile(
+                                title: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        'Relatório $nome - $data - $hora',
+                                        style: const TextStyle(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.green,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 8.0),
-                                    child: IconButton(
-                                      icon: Icon(
-                                        fields['favorito'] == true ? Icons.star : Icons.star_border,
-                                        size: 35,
-                                        color: Colors.yellow,
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 8.0),
+                                      child: IconButton(
+                                        icon: Icon(
+                                          fields['favorito'] == true ? Icons.star : Icons.star_border,
+                                          size: 35,
+                                          color: Colors.yellow,
+                                        ),
+                                        onPressed: () async {
+                                          await _toggleFavorite(doc);
+                                          setState(() {
+                                            fields['favorito'] = !fields['favorito'];
+                                          });
+                                        },
                                       ),
-                                      onPressed: () async {
-                                        await _toggleFavorite(doc);
-                                        setState(() {
-                                          fields['favorito'] = !fields['favorito'];
-                                        });
-                                      },
+                                    ),
+                                  ],
+                                ),
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        ...fieldOrder.map((key) {
+                                          if (fields.containsKey(key)) {
+                                            return Padding(
+                                              padding: const EdgeInsets.only(bottom: 8),
+                                              child: Text(
+                                                '${fieldLabels[key]}: ${fields[key]}',
+                                                style: const TextStyle(
+                                                  fontSize: 30,
+                                                  color: Colors.green,
+                                                ),
+                                              ),
+                                            );
+                                          } else {
+                                            return const SizedBox.shrink();
+                                          }
+                                        }).toList(),
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 30),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) => EditarRelatorioScreen(
+                                                        documentId: doc.id,
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.green,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(30),
+                                                  ),
+                                                  elevation: 6,
+                                                  minimumSize: const Size(150, 70),
+                                                ),
+                                                child: const Text(
+                                                  'Editar',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 30,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 8),
+                                              ElevatedButton(
+                                                onPressed: () async {
+                                                  bool confirm = await showDialog(
+                                                    context: context,
+                                                    builder: (context) => AlertDialog(
+                                                      title: const Text(
+                                                        'Confirmar Exclusão',
+                                                        style: TextStyle(
+                                                          color: Colors.green,
+                                                          fontSize: 35,
+                                                          fontWeight: FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      content: const Text(
+                                                        'Você tem certeza que deseja excluir este relatório?',
+                                                        style: TextStyle(
+                                                          color: Colors.green,
+                                                          fontSize: 30,
+                                                        ),
+                                                      ),
+                                                      actions: [
+                                                        TextButton(
+                                                          style: TextButton.styleFrom(
+                                                            backgroundColor: Colors.green,
+                                                            minimumSize: const Size(180, 50),
+                                                          ),
+                                                          onPressed: () =>
+                                                              Navigator.of(context).pop(false),
+                                                          child: const Text(
+                                                            'Cancelar',
+                                                            style: TextStyle(
+                                                              color: Colors.white,
+                                                              fontSize: 30,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        TextButton(
+                                                          style: TextButton.styleFrom(
+                                                            backgroundColor: Colors.green,
+                                                            minimumSize: const Size(180, 50),
+                                                          ),
+                                                          onPressed: () =>
+                                                              Navigator.of(context).pop(true),
+                                                          child: const Text(
+                                                            'Excluir',
+                                                            style: TextStyle(
+                                                              color: Colors.white,
+                                                              fontSize: 30,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ) ??
+                                                      false;
+
+                                                  if (confirm) {
+                                                    await _deleteReport(doc.id);
+                                                  }
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.green,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(30),
+                                                  ),
+                                                  elevation: 6,
+                                                  minimumSize: const Size(150, 70),
+                                                ),
+                                                child: const Text(
+                                                  'Excluir',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 30,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 8),
+                                              ElevatedButton(
+                                                onPressed: () async {
+                                                  await _exportToPDF(doc);
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.green,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(30),
+                                                  ),
+                                                  elevation: 6,
+                                                  minimumSize: const Size(150, 70),
+                                                ),
+                                                child: const Text(
+                                                  'Exportar PDF',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 30,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
                               ),
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      ...fieldOrder.map((key) {
-                                        if (fields.containsKey(key)) {
-                                          return Padding(
-                                            padding: const EdgeInsets.only(bottom: 8),
-                                            child: Text(
-                                              '${fieldLabels[key]}: ${fields[key]}',
-                                              style: const TextStyle(
-                                                fontSize: 30,
-                                                color: Colors.green,
-                                              ),
-                                            ),
-                                          );
-                                        } else {
-                                          return const SizedBox.shrink();
-                                        }
-                                      }).toList(),
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 30),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            ElevatedButton(
-                                              onPressed: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) => EditarRelatorioScreen(
-                                                      documentId: doc.id,
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: Colors.green,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(30),
-                                                ),
-                                                elevation: 6,
-                                                minimumSize: const Size(150, 70),
-                                              ),
-                                              child: const Text(
-                                                'Editar',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 30,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(width: 8),
-                                            ElevatedButton(
-                                              onPressed: () async {
-                                                bool confirm = await showDialog(
-                                                  context: context,
-                                                  builder: (context) => AlertDialog(
-                                                    title: const Text(
-                                                      'Confirmar Exclusão',
-                                                      style: TextStyle(
-                                                        color: Colors.green,
-                                                        fontSize: 35,
-                                                        fontWeight: FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                    content: const Text(
-                                                      'Você tem certeza que deseja excluir este relatório?',
-                                                      style: TextStyle(
-                                                        color: Colors.green,
-                                                        fontSize: 30,
-                                                      ),
-                                                    ),
-                                                    actions: [
-                                                      TextButton(
-                                                        style: TextButton.styleFrom(
-                                                          backgroundColor: Colors.green,
-                                                          minimumSize: const Size(180, 50),
-                                                        ),
-                                                        onPressed: () =>
-                                                            Navigator.of(context).pop(false),
-                                                        child: const Text(
-                                                          'Cancelar',
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 30,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      TextButton(
-                                                        style: TextButton.styleFrom(
-                                                          backgroundColor: Colors.green,
-                                                          minimumSize: const Size(180, 50),
-                                                        ),
-                                                        onPressed: () =>
-                                                            Navigator.of(context).pop(true),
-                                                        child: const Text(
-                                                          'Excluir',
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 30,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ) ??
-                                                    false;
-
-                                                if (confirm) {
-                                                  await _deleteReport(doc.id);
-                                                }
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: Colors.green,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(30),
-                                                ),
-                                                elevation: 6,
-                                                minimumSize: const Size(150, 70),
-                                              ),
-                                              child: const Text(
-                                                'Excluir',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 30,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(width: 8),
-                                            ElevatedButton(
-                                              onPressed: () async {
-                                                await _exportToPDF(doc);
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: Colors.green,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(30),
-                                                ),
-                                                elevation: 6,
-                                                minimumSize: const Size(150, 70),
-                                              ),
-                                              child: const Text(
-                                                'Exportar PDF',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 30,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
                             ),
                           ),
-                        ),
-                      );
-                    }).toList(),
+                        );
+                      }).toList(),
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         ),
       ),

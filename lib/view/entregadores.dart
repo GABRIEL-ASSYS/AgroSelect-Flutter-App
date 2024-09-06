@@ -1,5 +1,6 @@
 import 'package:addcs/themes.dart';
 import 'package:addcs/view/editar_entregador.dart';
+import 'package:addcs/view/favoritos_entregadores.dart';
 import 'package:addcs/view/menu.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -75,15 +76,28 @@ class _EntregadoresScreenState extends State<EntregadoresScreen> {
               ),
             ),
           ),
-          title: const Text(
-            'Gerenciar Entregadores',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 45,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 12.0),
+              child: IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const FavoritosEntregadoresScreen(),
+                    ),
+                  );
+                },
+                icon: Icon(
+                  Icons.star, // Estrela preenchida
+                  size: 35,
+                  color: AppColors.branco,
+                ),
+              ),
             ),
-          ),
+          ],
         ),
-        body: StreamBuilder<QuerySnapshot>(
+          body: StreamBuilder<QuerySnapshot>(
           stream: _firestore.collection('entregadores').snapshots(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
