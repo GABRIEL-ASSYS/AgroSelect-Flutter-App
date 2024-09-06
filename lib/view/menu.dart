@@ -1,4 +1,4 @@
-import 'package:addcs/view/favoritos.dart';
+import 'package:addcs/view/favoritos_relatorios.dart';
 import 'package:addcs/view/perfil.dart';
 import 'package:addcs/themes.dart';
 import 'package:addcs/view/cadastro_entregador.dart';
@@ -102,16 +102,6 @@ class MenuScreen extends StatelessWidget {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) => const EntregadoresScreen()),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 30),
-                  SecundaryButton(
-                    text: 'Favoritos',
-                    onTap: (){
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => const FavoritosScreen()),
                       );
                     },
                   ),
