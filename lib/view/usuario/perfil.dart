@@ -454,6 +454,11 @@ class _PerfilScreenState extends State<PerfilScreen> {
       appBar: AppBar(
         backgroundColor: Colors.green,
         toolbarHeight: 90,
+        title: Image.asset(
+          'assets/images/logo.png',
+          height: 60,
+        ),
+        centerTitle: true,
         leading: IconButton(
           onPressed: () {
             Navigator.pushReplacement(

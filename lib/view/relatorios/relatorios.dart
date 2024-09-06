@@ -194,6 +194,11 @@ class _RelatoriosScreenState extends State<RelatoriosScreen> {
           appBar: AppBar(
             backgroundColor: AppColors.verde,
             toolbarHeight: 90,
+            title: Image.asset(
+              'assets/images/logo.png',
+              height: 60,
+            ),
+            centerTitle: true,
             leading: IconButton(
               onPressed: () {
                 Navigator.pushReplacement(

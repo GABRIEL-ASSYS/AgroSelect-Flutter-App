@@ -58,6 +58,11 @@ class _EntregadoresScreenState extends State<EntregadoresScreen> {
         appBar: AppBar(
           backgroundColor: AppColors.verde,
           toolbarHeight: 90,
+          title: Image.asset(
+            'assets/images/logo.png',
+            height: 60,
+          ),
+          centerTitle: true,
           leading: IconButton(
             onPressed: () {
               Navigator.pushReplacement(

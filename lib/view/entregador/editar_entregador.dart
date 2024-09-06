@@ -78,16 +78,11 @@ class _EditarEntregadorScreenState extends State<EditarEntregadorScreen> {
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 90,
-        title: const Padding(
-          padding: EdgeInsets.only(left: 20),
-          child: Text(
-            'Editar Entregador',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 45,
-            ),
-          ),
+        title: Image.asset(
+          'assets/images/logo.png',
+          height: 60,
         ),
+        centerTitle: true,
         backgroundColor: Colors.green,
         leading: IconButton(
           onPressed: () {

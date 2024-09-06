@@ -30,6 +30,15 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Container(
         decoration: AppBackground.boxDecoration,
         child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: AppColors.verde,
+            toolbarHeight: 90,
+            title: Image.asset(
+              'assets/images/logo.png',
+              height: 60,
+            ),
+            centerTitle: true,
+          ),
           backgroundColor: Colors.transparent,
           body: Center(
             child: _isLoading

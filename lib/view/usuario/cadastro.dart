@@ -38,6 +38,11 @@ class _CadastroScreenState extends State<CadastroScreen> {
           appBar: AppBar(
             backgroundColor: AppColors.verde,
             toolbarHeight: 90,
+            title: Image.asset(
+              'assets/images/logo.png',
+              height: 60,
+            ),
+            centerTitle: true,
             leading: IconButton(
               onPressed: () {
                 Navigator.of(context).pop();

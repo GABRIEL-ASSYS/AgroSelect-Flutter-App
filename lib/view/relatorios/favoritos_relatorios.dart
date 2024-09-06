@@ -196,6 +196,11 @@ class _FavoritosRelatoriosScreenState extends State<FavoritosRelatoriosScreen> {
           appBar: AppBar(
             backgroundColor: AppColors.verde,
             toolbarHeight: 90,
+            title: Image.asset(
+              'assets/images/logo.png',
+              height: 60,
+            ),
+            centerTitle: true,
             leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
