@@ -1,7 +1,7 @@
 import 'package:addcs/themes.dart';
-import 'package:addcs/view/editar_relatorio.dart';
-import 'package:addcs/view/favoritos_relatorios.dart';
-import 'package:addcs/view/menu.dart';
+import 'package:addcs/view/relatorios/editar_relatorio.dart';
+import 'package:addcs/view/relatorios/favoritos_relatorios.dart';
+import 'package:addcs/view/menu/menu.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pdf/pdf.dart';

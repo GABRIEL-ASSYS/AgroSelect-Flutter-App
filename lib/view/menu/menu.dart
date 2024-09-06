@@ -1,12 +1,11 @@
-import 'package:addcs/view/favoritos_relatorios.dart';
-import 'package:addcs/view/perfil.dart';
+import 'package:addcs/view/entregador/entregadores.dart';
+import 'package:addcs/view/usuario/perfil.dart';
 import 'package:addcs/themes.dart';
-import 'package:addcs/view/cadastro_entregador.dart';
+import 'package:addcs/view/entregador/cadastro_entregador.dart';
 import 'package:addcs/view/components/secundary_button.dart';
-import 'package:addcs/view/entregadores.dart';
-import 'package:addcs/view/login.dart';
-import 'package:addcs/view/recebimento_embalagens.dart';
-import 'package:addcs/view/relatorios.dart';
+import 'package:addcs/view/usuario/login.dart';
+import 'package:addcs/view/relatorios/recebimento_embalagens.dart';
+import 'package:addcs/view/relatorios/relatorios.dart';
 import 'package:flutter/material.dart';
 
 class MenuScreen extends StatelessWidget {

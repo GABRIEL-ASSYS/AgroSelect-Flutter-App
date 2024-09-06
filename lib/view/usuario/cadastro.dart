@@ -1,7 +1,7 @@
 import 'package:addcs/services/auth_service.dart';
 import 'package:addcs/themes.dart';
 import 'package:addcs/view/components/primary_button.dart';
-import 'package:addcs/view/login.dart';
+import 'package:addcs/view/usuario/login.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

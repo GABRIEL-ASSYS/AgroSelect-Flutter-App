@@ -1,7 +1,7 @@
 import 'package:addcs/themes.dart';
 import 'package:addcs/view/components/primary_button.dart';
-import 'package:addcs/view/entregadores.dart';
-import 'package:addcs/view/menu.dart';
+import 'package:addcs/view/entregador/entregadores.dart';
+import 'package:addcs/view/menu/menu.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';

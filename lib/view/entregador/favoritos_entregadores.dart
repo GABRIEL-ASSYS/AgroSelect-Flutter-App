@@ -1,6 +1,6 @@
 import 'package:addcs/themes.dart';
-import 'package:addcs/view/editar_entregador.dart';
-import 'package:addcs/view/entregadores.dart';
+import 'package:addcs/view/entregador/editar_entregador.dart';
+import 'package:addcs/view/entregador/entregadores.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
