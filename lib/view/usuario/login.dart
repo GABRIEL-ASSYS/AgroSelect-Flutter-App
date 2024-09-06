@@ -97,7 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 child: IconButton(
                                   icon: Icon(
                                     _obscureText ? Icons.visibility : Icons.visibility_off,
-                                    color: Colors.grey,
+                                    color: Colors.green,
                                   ),
                                   onPressed: () {
                                     setState(() {
