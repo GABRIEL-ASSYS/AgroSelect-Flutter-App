@@ -204,9 +204,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               senha: _senhaController.text,
                             );
                             if (mounted) {
-                              Navigator.push(
+                              Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(builder: (context) => const MenuScreen()),
+                                    (Route<dynamic> route) => false,
                               );
                             }
                           } catch (e) {
