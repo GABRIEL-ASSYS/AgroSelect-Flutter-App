@@ -5,6 +5,52 @@ import 'package:addcs/view/relatorios.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter/services.dart';
+
+class DateInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    String newText = newValue.text;
+
+    newText = newText.replaceAll(RegExp(r'[^0-9]'), '');
+
+    if (newText.length > 2) {
+      newText = newText.substring(0, 2) + '/' + newText.substring(2);
+    }
+    if (newText.length > 5) {
+      newText = newText.substring(0, 5) + '/' + newText.substring(5);
+    }
+
+    TextSelection newSelection = TextSelection.collapsed(offset: newText.length);
+
+    return TextEditingValue(
+      text: newText,
+      selection: newSelection,
+    );
+  }
+}
+
+class TimeInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    String newText = newValue.text;
+
+    newText = newText.replaceAll(RegExp(r'[^0-9]'), '');
+
+    if (newText.length > 2) {
+      newText = newText.substring(0, 2) + ':' + newText.substring(2);
+    }
+
+    TextSelection newSelection = TextSelection.collapsed(offset: newText.length);
+
+    return TextEditingValue(
+      text: newText,
+      selection: newSelection,
+    );
+  }
+}
 
 class RecebimentoEmbalagensScreen extends StatefulWidget {
   const RecebimentoEmbalagensScreen({super.key});
@@ -198,15 +244,20 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   controller: _dataController,
                                   style: AppInputs.textDecoration,
                                   decoration: AppInputs.newInputDecoration(
-                                      "dd/mm/aa", "Data"),
-                                  keyboardType: TextInputType.text,
+                                      "dd/mm/aa", "Data"
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: [DateInputFormatter()],
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return 'Por favor, insira uma data';
                                     }
+                                    if (!RegExp(r'^\d{2}/\d{2}/\d{4}$').hasMatch(value)) {
+                                      return 'Data inválida';
+                                    }
                                     return null;
                                   },
-                                ),
+                                )
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 30.0),
@@ -214,11 +265,16 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   controller: _horaController,
                                   style: AppInputs.textDecoration,
                                   decoration: AppInputs.newInputDecoration(
-                                      "hh:mm", "Hora"),
-                                  keyboardType: TextInputType.text,
+                                      "hh:mm", "Hora"
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: [TimeInputFormatter()],
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return 'Por favor, insira uma hora';
+                                    }
+                                    if (!RegExp(r'^\d{2}:\d{2}$').hasMatch(value)) {
+                                      return 'Hora inválida';
                                     }
                                     return null;
                                   },
