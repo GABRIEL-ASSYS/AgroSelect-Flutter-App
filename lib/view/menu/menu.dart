@@ -27,12 +27,7 @@ class MenuScreen extends StatelessWidget {
             centerTitle: true,
             leading: IconButton(
               onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const LoginScreen()
-                  ),
-                );
+                _showExitConfirmationDialog(context);
               },
               icon: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -45,7 +40,7 @@ class MenuScreen extends StatelessWidget {
             ),
             actions: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(right:16.0),
+                padding: const EdgeInsets.only(right: 16.0),
                 child: IconButton(
                   icon: Icon(
                     Icons.account_circle,
@@ -72,27 +67,29 @@ class MenuScreen extends StatelessWidget {
                 children: <Widget>[
                   SecundaryButton(
                     text: 'Recebimento de embalagens',
-                    onTap: (){
+                    onTap: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => const RecebimentoEmbalagensScreen()),
+                        MaterialPageRoute(
+                            builder: (context) => const RecebimentoEmbalagensScreen()),
                       );
                     },
                   ),
                   const SizedBox(height: 30),
                   SecundaryButton(
                     text: 'Cadastro Entregador',
-                    onTap: (){
+                    onTap: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => const CadastroEntregadorScreen()),
+                        MaterialPageRoute(
+                            builder: (context) => const CadastroEntregadorScreen()),
                       );
                     },
                   ),
                   const SizedBox(height: 30),
                   SecundaryButton(
                     text: 'Relatórios de recebimento',
-                    onTap: (){
+                    onTap: () {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) => const RelatoriosScreen()),
@@ -102,7 +99,7 @@ class MenuScreen extends StatelessWidget {
                   const SizedBox(height: 30),
                   SecundaryButton(
                     text: 'Entregadores',
-                    onTap: (){
+                    onTap: () {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) => const EntregadoresScreen()),
@@ -117,4 +114,67 @@ class MenuScreen extends StatelessWidget {
       ),
     );
   }
+
+  void _showExitConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Sair',
+            style: TextStyle(
+              fontSize: 35,
+              fontWeight: FontWeight.bold,
+              color: Colors.green,
+            ),
+          ),
+          content: const Text(
+            'Você tem certeza que deseja sair?',
+            style: TextStyle(
+              fontSize: 30,
+              color: Colors.green,
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.green,
+                minimumSize: const Size(100, 50),
+              ),
+              child: const Text(
+                'Não',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 25,
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.green,
+                minimumSize: const Size(100, 50),
+              ),
+              child: const Text(
+                'Sim',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 25,
+                ),
+              ),
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
+
