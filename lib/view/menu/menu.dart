@@ -165,9 +165,10 @@ class MenuScreen extends StatelessWidget {
                 ),
               ),
               onPressed: () {
-                Navigator.pushReplacement(
+                Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (context) => const LoginScreen()),
+                      (Route<dynamic> route) => false,
                 );
               },
             ),
