@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class PerfilScreen extends StatefulWidget {
   const PerfilScreen({super.key});
@@ -17,6 +19,20 @@ class _PerfilScreenState extends State<PerfilScreen> {
   User? _user;
   String _nome = '';
   String _email = '';
+
+  XFile? _image;
+
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> _pickImage() async {
+    final XFile? pickedImage = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedImage != null) {
+      setState(() {
+        _image = pickedImage;
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -461,14 +477,39 @@ class _PerfilScreenState extends State<PerfilScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            CircleAvatar(
-              radius: 120,
-              backgroundColor: Colors.grey[300],
-              child: Icon(
-                Icons.person,
-                size: 150,
-                color: Colors.grey[700],
+            GestureDetector(
+              onTap: _pickImage,
+              child: CircleAvatar(
+                radius: 120,
+                backgroundColor: Colors.grey[300],
+                backgroundImage: _image != null
+                    ? FileImage(File(_image!.path))
+                    : null,
+                child: _image == null
+                    ? Icon(
+                  Icons.person,
+                  size: 150,
+                  color: Colors.grey[700],
+                )
+                    : null,
               ),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _pickImage,
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
+                foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                padding: MaterialStateProperty.all<EdgeInsets>(const EdgeInsets.symmetric(horizontal: 20, vertical: 10)), // Padding
+                shape: MaterialStateProperty.all<OutlinedBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                ),
+              ),
+              child: const Text('Selecionar Foto', style: TextStyle(
+                fontSize: 25,
+              )),
             ),
             const SizedBox(height: 20),
             Text(
