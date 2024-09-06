@@ -1,6 +1,19 @@
 # ADDCS Flutter
 
-  Este é um projeto criado para ser apresentado como um trabalho para ser entregue em um Desafio Integrador da faculdade, a aplicação se trata de um aplicativo simples para cadastrar a entrega de embalagens de defensivos agrícolas para a empresa ADDCS.
+  Este é um projeto criado para ser apresentado como um trabalho para ser entregue em um Desafio Integrador da faculdade, a aplicação se trata de um aplicativo para cadastrar a entrega de embalagens de defensivos agrícolas para a empresa ADDCS, também tendo um cadastro de entregadores, lista de relatórios de entrega e de entregadores e listas de favoritos para relatórios e entregadores, quanto aos relatórios é possível os exportar por meio de PDF, ficando salvo no dispositivo e posteriormente podendo ser mandado para alguém com o aplicativo de preferência do usuário. Além disso tem uma tela de perfil com funcionalidades como alterar e-mail, alterar senha e verificar e-mail, também tem a funcionalidade de carregar uma foto de perfil. O banco de dados é NoSQL Firebase Firestore e a autenticação de usuários é feita pelo Firebase Authenticator.
+
+## Funcionalidades
+* Cadastro de usuários;
+* Login de usuários;
+* Esqueci a minha senha;
+* Registro, exclusão e edição de entrega de embalagens;
+* Cadastro, exclusão e edição de entregadores;
+* Lista de Relatórios de entrega;
+* Lista de entregadores;
+* Funcionalidade de favoritar relatórios e entregadores;
+* Botões para ocultar ou visualizar as senhas;
+* Tela de perfil onde pode ser alterado a senha e e-mail, onde também pode ser feita a verificação de e-mail e onde pode ser colocado uma foto de perfil;
+* Possibilidade de exportar os relatórios em PDF;
 
 ## 🚀 Começando
 
