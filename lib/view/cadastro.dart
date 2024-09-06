@@ -27,6 +27,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
 
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +53,9 @@ class _CadastroScreenState extends State<CadastroScreen> {
             ),
           ),
           body: Center(
-            child: SingleChildScrollView(
+            child: _isLoading
+                ? const CircularProgressIndicator()
+                : SingleChildScrollView(
               child: Column(
                 children: <Widget>[
                   Padding(
@@ -201,6 +204,10 @@ class _CadastroScreenState extends State<CadastroScreen> {
                         text: 'Cadastrar',
                         onTap: () async {
                           if (_formKey.currentState!.validate()) {
+                            setState(() {
+                              _isLoading = true;
+                            });
+
                             try {
                               UserCredential userCredential = await _authService.cadastroUsuario(
                                 nome: _nomeController.text,
@@ -222,6 +229,10 @@ class _CadastroScreenState extends State<CadastroScreen> {
                                   timeInSecForIosWeb: 3,
                                 );
 
+                                setState(() {
+                                  _isLoading = false;
+                                });
+
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(builder: (context) => const LoginScreen()),
@@ -234,6 +245,9 @@ class _CadastroScreenState extends State<CadastroScreen> {
                                   fontSize: 25,
                                   timeInSecForIosWeb: 3,
                                 );
+                                setState(() {
+                                  _isLoading = false;
+                                });
                               }
                             } catch (e) {
                               Fluttertoast.showToast(
@@ -243,6 +257,9 @@ class _CadastroScreenState extends State<CadastroScreen> {
                                 fontSize: 25,
                                 timeInSecForIosWeb: 3,
                               );
+                              setState(() {
+                                _isLoading = false;
+                              });
                             }
                           } else {
                             Fluttertoast.showToast(
