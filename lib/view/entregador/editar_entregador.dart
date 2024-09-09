@@ -86,12 +86,7 @@ class _EditarEntregadorScreenState extends State<EditarEntregadorScreen> {
         backgroundColor: Colors.green,
         leading: IconButton(
           onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const EntregadoresScreen(),
-              ),
-            );
+            _showExitConfirmationDialog(context);
           },
           icon: const Padding(
             padding: EdgeInsets.all(8.0),
@@ -187,6 +182,69 @@ class _EditarEntregadorScreenState extends State<EditarEntregadorScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  void _showExitConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Sair',
+            style: TextStyle(
+              fontSize: 35,
+              fontWeight: FontWeight.bold,
+              color: Colors.green,
+            ),
+          ),
+          content: const Text(
+            'Nenhuma das alterações feitas será salva, você tem certeza que deseja sair?',
+            style: TextStyle(
+              fontSize: 30,
+              color: Colors.green,
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.green,
+                minimumSize: const Size(100, 50),
+              ),
+              child: const Text(
+                'Não',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 25,
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.green,
+                minimumSize: const Size(100, 50),
+              ),
+              child: const Text(
+                'Sim',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 25,
+                ),
+              ),
+              onPressed: () {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const EntregadoresScreen()),
+                      (Route<dynamic> route) => false,
+                );
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
