@@ -1,6 +1,7 @@
 import 'package:addcs/services/auth_service.dart';
 import 'package:addcs/themes.dart';
 import 'package:addcs/view/components/primary_button.dart';
+import 'package:addcs/view/menu/menu.dart';
 import 'package:addcs/view/usuario/login.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -45,7 +46,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
             centerTitle: true,
             leading: IconButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                _showExitConfirmationDialog(context);
               },
               icon: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -285,6 +286,69 @@ class _CadastroScreenState extends State<CadastroScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  void _showExitConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Sair',
+            style: TextStyle(
+              fontSize: 35,
+              fontWeight: FontWeight.bold,
+              color: Colors.green,
+            ),
+          ),
+          content: const Text(
+            'Você tem certeza que deseja sair?',
+            style: TextStyle(
+              fontSize: 30,
+              color: Colors.green,
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.green,
+                minimumSize: const Size(100, 50),
+              ),
+              child: const Text(
+                'Não',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 25,
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.green,
+                minimumSize: const Size(100, 50),
+              ),
+              child: const Text(
+                'Sim',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 25,
+                ),
+              ),
+              onPressed: () {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MenuScreen()),
+                      (Route<dynamic> route) => false,
+                );
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
