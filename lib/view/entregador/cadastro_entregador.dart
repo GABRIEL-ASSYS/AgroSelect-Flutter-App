@@ -25,6 +25,8 @@ class _CadastroEntregadorScreenState extends State<CadastroEntregadorScreen> {
 
   final CollectionReference entregadoresCollection = FirebaseFirestore.instance.collection('entregadores');
 
+  bool _isLoading = false;
+
   Future<void> cadastrarEntregador() async {
     if (_formKey.currentState!.validate()) {
       try {
@@ -96,7 +98,9 @@ class _CadastroEntregadorScreenState extends State<CadastroEntregadorScreen> {
               ),
             ),
             body: Center(
-              child: SingleChildScrollView(
+              child: _isLoading
+                ? const CircularProgressIndicator()
+                : SingleChildScrollView(
                 child: Column(
                   children: <Widget>[
                     Padding(
@@ -223,6 +227,10 @@ class _CadastroEntregadorScreenState extends State<CadastroEntregadorScreen> {
                       children: [
                         PrimaryButton(text: 'Cadastrar', onTap: () async {
                           if (_formKey.currentState!.validate()) {
+                            setState(() {
+                              _isLoading = true;
+                            });
+
                             try {
                               await entregadoresCollection.add({
                                 'nome': _nomeController.text,
@@ -253,6 +261,10 @@ class _CadastroEntregadorScreenState extends State<CadastroEntregadorScreen> {
                               );
                             }
                           } else {
+                            setState(() {
+                              _isLoading = false;
+                            });
+
                             Fluttertoast.showToast(
                               msg: "Por favor, preencha todos os campos corretamente.",
                               toastLength: Toast.LENGTH_SHORT,
