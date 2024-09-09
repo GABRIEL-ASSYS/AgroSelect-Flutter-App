@@ -108,6 +108,8 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
 
   final CollectionReference embalagemCollection = FirebaseFirestore.instance.collection('embalagens');
 
+  bool _isLoading = false;
+
   Future<void> cadastrarEmbalagem() async {
     if (_formKey.currentState!.validate()) {
       try {
@@ -203,12 +205,7 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
               centerTitle: true,
               leading: IconButton(
                   onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const MenuScreen()
-                      ),
-                    );
+                    _showExitConfirmationDialog(context);
                   },
                   icon: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -1166,6 +1163,8 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                       children: [
                         PrimaryButton(text: 'Cadastrar', onTap: () async {
                           if (_formKey.currentState!.validate()) {
+
+
                             try {
                               await embalagemCollection.add({
                                 'data': _dataController.text,
@@ -1251,6 +1250,69 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
             ),
           ),
         ),
+    );
+  }
+
+  void _showExitConfirmationDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text(
+              'Sair',
+              style: TextStyle(
+                fontSize: 35,
+                fontWeight: FontWeight.bold,
+                color: Colors.green,
+              )
+            ),
+            content: const Text(
+              'Todo conteúdo escrito não será salvo, você tem certeza que deseja sair?',
+              style: TextStyle(
+                fontSize: 30,
+                color: Colors.green,
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  minimumSize: const Size(100, 50),
+                ),
+                child: const Text(
+                  'Não',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 25,
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                }
+              ),
+              TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  minimumSize: const Size(100, 50),
+                ),
+                child: const Text(
+                  'Sim',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 25,
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MenuScreen()),
+                        (Route<dynamic> route) => false,
+                  );
+                },
+              ),
+            ],
+          );
+        }
     );
   }
 }
