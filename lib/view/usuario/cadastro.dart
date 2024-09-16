@@ -1,7 +1,6 @@
 import 'package:addcs/services/auth_service.dart';
 import 'package:addcs/themes.dart';
 import 'package:addcs/view/components/primary_button.dart';
-import 'package:addcs/view/menu/menu.dart';
 import 'package:addcs/view/usuario/login.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -341,7 +340,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
               onPressed: () {
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => const MenuScreen()),
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
                       (Route<dynamic> route) => false,
                 );
               },
