@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/services.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class DateInputFormatter extends TextInputFormatter {
   @override
@@ -109,6 +110,11 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
   final CollectionReference embalagemCollection = FirebaseFirestore.instance.collection('embalagens');
 
   bool _isLoading = false;
+
+  final phoneMaskFormatter = MaskTextInputFormatter(
+    mask: '(##)#####-####',
+    filter: { "#": RegExp(r'[0-9]') },
+  );
 
   Future<void> cadastrarEmbalagem() async {
     if (_formKey.currentState!.validate()) {
@@ -321,12 +327,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   child: TextFormField(
                                     controller: _telefoneController,
                                     style: AppInputs.textDecoration,
-                                    decoration: AppInputs.newInputDecoration(
-                                        "(00)00000-0000", "Telefone"),
+                                    decoration: AppInputs.newInputDecoration("(00)00000-0000", "Telefone"),
                                     keyboardType: TextInputType.phone,
+                                    inputFormatters: [phoneMaskFormatter],
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
-                                        return 'Por favor, insira um numero de Telefone';
+                                        return 'Por favor, insira um número de telefone';
                                       }
                                       return null;
                                     },
