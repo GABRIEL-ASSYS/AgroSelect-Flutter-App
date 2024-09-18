@@ -24,6 +24,8 @@ class _PerfilScreenState extends State<PerfilScreen> {
 
   final ImagePicker _picker = ImagePicker();
 
+  bool _isLoading = false;
+
   Future<void> _pickImage() async {
     final XFile? pickedImage = await _picker.pickImage(source: ImageSource.gallery);
 
@@ -44,6 +46,10 @@ class _PerfilScreenState extends State<PerfilScreen> {
   }
 
   Future<void> _fetchUserData() async {
+    setState(() {
+      _isLoading = true;
+    });
+
     try {
       DocumentSnapshot userDoc = await _firestore.collection('users').doc(_user!.uid).get();
       if (userDoc.exists) {
@@ -60,6 +66,10 @@ class _PerfilScreenState extends State<PerfilScreen> {
         fontSize: 25,
         timeInSecForIosWeb: 3,
       );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -479,90 +489,94 @@ class _PerfilScreenState extends State<PerfilScreen> {
         ),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            GestureDetector(
-              onTap: _pickImage,
-              child: CircleAvatar(
-                radius: 120,
-                backgroundColor: Colors.grey[300],
-                backgroundImage: _image != null
-                    ? FileImage(File(_image!.path))
-                    : null,
-                child: _image == null
-                    ? Icon(
-                  Icons.person,
-                  size: 150,
-                  color: Colors.grey[700],
-                )
-                    : null,
+        child: _isLoading
+        ? const CircularProgressIndicator()
+        : SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              GestureDetector(
+                onTap: _pickImage,
+                child: CircleAvatar(
+                  radius: 120,
+                  backgroundColor: Colors.grey[300],
+                  backgroundImage: _image != null
+                      ? FileImage(File(_image!.path))
+                      : null,
+                  child: _image == null
+                      ? Icon(
+                    Icons.person,
+                    size: 150,
+                    color: Colors.grey[700],
+                  )
+                      : null,
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _pickImage,
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
-                foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                padding: MaterialStateProperty.all<EdgeInsets>(const EdgeInsets.symmetric(horizontal: 20, vertical: 10)), // Padding
-                shape: MaterialStateProperty.all<OutlinedBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _pickImage,
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
+                  foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                  padding: MaterialStateProperty.all<EdgeInsets>(const EdgeInsets.symmetric(horizontal: 20, vertical: 10)), // Padding
+                  shape: MaterialStateProperty.all<OutlinedBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                ),
+                child: const Text('Selecionar Foto', style: TextStyle(
+                  fontSize: 25,
+                )),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                _nome,
+                style: const TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                _email,
+                style: TextStyle(fontSize: 25, color: Colors.grey[600]),
+              ),
+              const SizedBox(height: 30),
+              TextButton(
+                onPressed: _alterarEmail,
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.green,
+                ),
+                child: const Text(
+                  'Alterar E-mail',
+                  style: TextStyle(
+                    fontSize: 25,
                   ),
                 ),
               ),
-              child: const Text('Selecionar Foto', style: TextStyle(
-                fontSize: 25,
-              )),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              _nome,
-              style: const TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
-            ),
-            Text(
-              _email,
-              style: TextStyle(fontSize: 25, color: Colors.grey[600]),
-            ),
-            const SizedBox(height: 30),
-            TextButton(
-              onPressed: _alterarEmail,
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.green,
-              ),
-              child: const Text(
-                'Alterar E-mail',
-                style: TextStyle(
-                  fontSize: 25,
+              TextButton(
+                onPressed: _verificarEmail,
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.green,
+                ),
+                child: const Text(
+                  'Verificar E-mail',
+                  style: TextStyle(
+                    fontSize: 25,
+                  ),
                 ),
               ),
-            ),
-            TextButton(
-              onPressed: _verificarEmail,
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.green,
-              ),
-              child: const Text(
-                'Verificar E-mail',
-                style: TextStyle(
-                  fontSize: 25,
+              TextButton(
+                onPressed: _alterarSenha,
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.green,
+                ),
+                child: const Text(
+                  'Alterar Senha',
+                  style: TextStyle(
+                    fontSize: 25,
+                  ),
                 ),
               ),
-            ),
-            TextButton(
-              onPressed: _alterarSenha,
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.green,
-              ),
-              child: const Text(
-                'Alterar Senha',
-                style: TextStyle(
-                  fontSize: 25,
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
