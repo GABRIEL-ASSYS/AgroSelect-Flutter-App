@@ -1,4 +1,4 @@
-# 🌱 ADDCS Flutter
+# 🌱 AgroSelect Flutter
 
   Este é um projeto criado para ser apresentado como Trabalho de Conclusão de Curso do curso de Engenharia de Software em minha faculdade, a aplicação se trata de um aplicativo para cadastrar a entrega de embalagens de defensivos agrícolas para a empresa ADDCS, também tendo um cadastro de entregadores, lista de relatórios de entrega e de entregadores e listas de favoritos para relatórios e entregadores, quanto aos relatórios é possível os exportar por meio de PDF, ficando salvo no dispositivo e posteriormente podendo ser mandado para alguém com o aplicativo de preferência do usuário. Além disso tem uma tela de perfil com funcionalidades como alterar e-mail, alterar senha e verificar e-mail, também tem a funcionalidade de carregar uma foto de perfil. O banco de dados é NoSQL Firebase Firestore e a autenticação de usuários é feita pelo Firebase Authenticator.
 
