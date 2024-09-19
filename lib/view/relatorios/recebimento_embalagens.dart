@@ -8,6 +8,11 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/services.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
+var cpfMaskFormatter = MaskTextInputFormatter(
+    mask: '###.###.###-##', filter: {"#": RegExp(r'[0-9]')});
+var cnpjMaskFormatter = MaskTextInputFormatter(
+    mask: '##.###.###/####-##', filter: {"#": RegExp(r'[0-9]')});
+
 class DateInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
@@ -23,7 +28,8 @@ class DateInputFormatter extends TextInputFormatter {
       newText = newText.substring(0, 5) + '/' + newText.substring(5);
     }
 
-    TextSelection newSelection = TextSelection.collapsed(offset: newText.length);
+    TextSelection newSelection =
+        TextSelection.collapsed(offset: newText.length);
 
     return TextEditingValue(
       text: newText,
@@ -44,7 +50,8 @@ class TimeInputFormatter extends TextInputFormatter {
       newText = newText.substring(0, 2) + ':' + newText.substring(2);
     }
 
-    TextSelection newSelection = TextSelection.collapsed(offset: newText.length);
+    TextSelection newSelection =
+        TextSelection.collapsed(offset: newText.length);
 
     return TextEditingValue(
       text: newText,
@@ -57,10 +64,12 @@ class RecebimentoEmbalagensScreen extends StatefulWidget {
   const RecebimentoEmbalagensScreen({super.key});
 
   @override
-  State<RecebimentoEmbalagensScreen> createState() => _RecebimentoEmbalagensScreenState();
+  State<RecebimentoEmbalagensScreen> createState() =>
+      _RecebimentoEmbalagensScreenState();
 }
 
-class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScreen> {
+class _RecebimentoEmbalagensScreenState
+    extends State<RecebimentoEmbalagensScreen> {
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _dataController = TextEditingController();
@@ -72,48 +81,83 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
   final TextEditingController _propriedadeController = TextEditingController();
   final TextEditingController _cnpjController = TextEditingController();
   final TextEditingController _enderecoController = TextEditingController();
-  final TextEditingController _pead250Controller = TextEditingController(text: '0');
-  final TextEditingController _pead1Controller = TextEditingController(text: '0');
-  final TextEditingController _pead5Controller = TextEditingController(text: '0');
-  final TextEditingController _pead10Controller = TextEditingController(text: '0');
-  final TextEditingController _pead20Controller = TextEditingController(text: '0');
-  final TextEditingController _coex250Controller = TextEditingController(text: '0');
-  final TextEditingController _coex1Controller = TextEditingController(text: '0');
-  final TextEditingController _coex5Controller = TextEditingController(text: '0');
-  final TextEditingController _coex10Controller = TextEditingController(text: '0');
-  final TextEditingController _coex20Controller = TextEditingController(text: '0');
-  final TextEditingController _tampasController = TextEditingController(text: '0');
-  final TextEditingController _plasticoMisto1Controller = TextEditingController(text: '0');
-  final TextEditingController _plasticoMisto5Controller = TextEditingController(text: '0');
-  final TextEditingController _plasticoMisto10Controller = TextEditingController(text: '0');
-  final TextEditingController _plasticoMisto20Controller = TextEditingController(text: '0');
-  final TextEditingController _acoContaminado1Controller = TextEditingController(text: '0');
-  final TextEditingController _acoContaminado5Controller = TextEditingController(text: '0');
-  final TextEditingController _acoContaminado10Controller = TextEditingController(text: '0');
-  final TextEditingController _acoContaminado20Controller = TextEditingController(text: '0');
-  final TextEditingController _papelaoController = TextEditingController(text: '0');
-  final TextEditingController _aluminio250Controller = TextEditingController(text: '0');
-  final TextEditingController _aluminio1Controller = TextEditingController(text: '0');
-  final TextEditingController _aluminio15Controller = TextEditingController(text: '0');
-  final TextEditingController _aco34Controller = TextEditingController(text: '0');
-  final TextEditingController _hidroxidoController = TextEditingController(text: '0');
-  final TextEditingController _acoNLController = TextEditingController(text: '0');
+  final TextEditingController _pead250Controller =
+      TextEditingController(text: '0');
+  final TextEditingController _pead1Controller =
+      TextEditingController(text: '0');
+  final TextEditingController _pead5Controller =
+      TextEditingController(text: '0');
+  final TextEditingController _pead10Controller =
+      TextEditingController(text: '0');
+  final TextEditingController _pead20Controller =
+      TextEditingController(text: '0');
+  final TextEditingController _coex250Controller =
+      TextEditingController(text: '0');
+  final TextEditingController _coex1Controller =
+      TextEditingController(text: '0');
+  final TextEditingController _coex5Controller =
+      TextEditingController(text: '0');
+  final TextEditingController _coex10Controller =
+      TextEditingController(text: '0');
+  final TextEditingController _coex20Controller =
+      TextEditingController(text: '0');
+  final TextEditingController _tampasController =
+      TextEditingController(text: '0');
+  final TextEditingController _plasticoMisto1Controller =
+      TextEditingController(text: '0');
+  final TextEditingController _plasticoMisto5Controller =
+      TextEditingController(text: '0');
+  final TextEditingController _plasticoMisto10Controller =
+      TextEditingController(text: '0');
+  final TextEditingController _plasticoMisto20Controller =
+      TextEditingController(text: '0');
+  final TextEditingController _acoContaminado1Controller =
+      TextEditingController(text: '0');
+  final TextEditingController _acoContaminado5Controller =
+      TextEditingController(text: '0');
+  final TextEditingController _acoContaminado10Controller =
+      TextEditingController(text: '0');
+  final TextEditingController _acoContaminado20Controller =
+      TextEditingController(text: '0');
+  final TextEditingController _papelaoController =
+      TextEditingController(text: '0');
+  final TextEditingController _aluminio250Controller =
+      TextEditingController(text: '0');
+  final TextEditingController _aluminio1Controller =
+      TextEditingController(text: '0');
+  final TextEditingController _aluminio15Controller =
+      TextEditingController(text: '0');
+  final TextEditingController _aco34Controller =
+      TextEditingController(text: '0');
+  final TextEditingController _hidroxidoController =
+      TextEditingController(text: '0');
+  final TextEditingController _acoNLController =
+      TextEditingController(text: '0');
   final TextEditingController _ibcController = TextEditingController(text: '0');
-  final TextEditingController _plasticoQuantidadeController = TextEditingController(text: '0');
-  final TextEditingController _plasticoQuilosController = TextEditingController(text: '0');
-  final TextEditingController _rigida1Controller = TextEditingController(text: '0');
-  final TextEditingController _rigida5Controller = TextEditingController(text: '0');
-  final TextEditingController _rigida10Controller = TextEditingController(text: '0');
-  final TextEditingController _rigida20Controller = TextEditingController(text: '0');
+  final TextEditingController _plasticoQuantidadeController =
+      TextEditingController(text: '0');
+  final TextEditingController _plasticoQuilosController =
+      TextEditingController(text: '0');
+  final TextEditingController _rigida1Controller =
+      TextEditingController(text: '0');
+  final TextEditingController _rigida5Controller =
+      TextEditingController(text: '0');
+  final TextEditingController _rigida10Controller =
+      TextEditingController(text: '0');
+  final TextEditingController _rigida20Controller =
+      TextEditingController(text: '0');
   final TextEditingController _obsController = TextEditingController();
 
-  final CollectionReference embalagemCollection = FirebaseFirestore.instance.collection('embalagens');
+  final CollectionReference embalagemCollection =
+      FirebaseFirestore.instance.collection('embalagens');
 
   bool _isLoading = false;
 
+  String? _selectedType = 'CPF';
+
   final phoneMaskFormatter = MaskTextInputFormatter(
     mask: '(##)#####-####',
-    filter: { "#": RegExp(r'[0-9]') },
+    filter: {"#": RegExp(r'[0-9]')},
   );
 
   Future<void> cadastrarEmbalagem() async {
@@ -194,92 +238,92 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Container(
-          decoration: AppBackground.boxDecoration,
-          child: Scaffold(
-            appBar: AppBar(
-              backgroundColor: AppColors.verde,
-              toolbarHeight: 90,
-              title: Image.asset(
-                'assets/images/logo.png',
-                height: 60,
-              ),
-              centerTitle: true,
-              leading: IconButton(
-                  onPressed: () {
-                    _showExitConfirmationDialog(context);
-                  },
-                  icon: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Icon(
-                      Icons.arrow_back,
-                      size: 55,
-                      color: AppColors.branco,
-                    ),
-                  ),
+      child: Container(
+        decoration: AppBackground.boxDecoration,
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: AppColors.verde,
+            toolbarHeight: 90,
+            title: Image.asset(
+              'assets/images/logo.png',
+              height: 60,
+            ),
+            centerTitle: true,
+            leading: IconButton(
+              onPressed: () {
+                _showExitConfirmationDialog(context);
+              },
+              icon: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Icon(
+                  Icons.arrow_back,
+                  size: 55,
+                  color: AppColors.branco,
+                ),
               ),
             ),
-            body: Center(
-              child: _isLoading
+          ),
+          body: Center(
+            child: _isLoading
                 ? const CircularProgressIndicator()
                 : SingleChildScrollView(
-                  child: Column(
-                    children: <Widget>[
-                      const SizedBox(height: 20),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: Text(
-                          "Recebimento de embalagens",
-                          style: TextStyle(
-                            fontSize: 50,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.verde,
+                    child: Column(
+                      children: <Widget>[
+                        const SizedBox(height: 20),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: Text(
+                            "Recebimento de embalagens",
+                            style: TextStyle(
+                              fontSize: 50,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.verde,
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 500,
-                        child: Form(
-                          key: _formKey,
+                        SizedBox(
+                          width: 500,
+                          child: Form(
+                            key: _formKey,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Padding(
-                                  padding: const EdgeInsets.only(bottom: 30.0),
-                                  child: TextFormField(
-                                    controller: _dataController,
-                                    style: AppInputs.textDecoration,
-                                    decoration: AppInputs.newInputDecoration(
-                                        "dd/mm/aa", "Data"
-                                    ),
-                                    keyboardType: TextInputType.number,
-                                    inputFormatters: [DateInputFormatter()],
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Por favor, insira uma data';
-                                      }
-                                      if (!RegExp(r'^\d{2}/\d{2}/\d{4}$').hasMatch(value)) {
-                                        return 'Data inválida';
-                                      }
-                                      return null;
-                                    },
-                                  )
-                                ),
+                                    padding:
+                                        const EdgeInsets.only(bottom: 30.0),
+                                    child: TextFormField(
+                                      controller: _dataController,
+                                      style: AppInputs.textDecoration,
+                                      decoration: AppInputs.newInputDecoration(
+                                          "dd/mm/aa", "Data"),
+                                      keyboardType: TextInputType.number,
+                                      inputFormatters: [DateInputFormatter()],
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Por favor, insira uma data';
+                                        }
+                                        if (!RegExp(r'^\d{2}/\d{2}/\d{4}$')
+                                            .hasMatch(value)) {
+                                          return 'Data inválida';
+                                        }
+                                        return null;
+                                      },
+                                    )),
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 30.0),
                                   child: TextFormField(
                                     controller: _horaController,
                                     style: AppInputs.textDecoration,
                                     decoration: AppInputs.newInputDecoration(
-                                        "hh:mm", "Hora"
-                                    ),
+                                        "hh:mm", "Hora"),
                                     keyboardType: TextInputType.number,
                                     inputFormatters: [TimeInputFormatter()],
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
                                         return 'Por favor, insira uma hora';
                                       }
-                                      if (!RegExp(r'^\d{2}:\d{2}$').hasMatch(value)) {
+                                      if (!RegExp(r'^\d{2}:\d{2}$')
+                                          .hasMatch(value)) {
                                         return 'Hora inválida';
                                       }
                                       return null;
@@ -323,7 +367,8 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   child: TextFormField(
                                     controller: _telefoneController,
                                     style: AppInputs.textDecoration,
-                                    decoration: AppInputs.newInputDecoration("(00)00000-0000", "Telefone"),
+                                    decoration: AppInputs.newInputDecoration(
+                                        "(00)00000-0000", "Telefone"),
                                     keyboardType: TextInputType.phone,
                                     inputFormatters: [phoneMaskFormatter],
                                     validator: (value) {
@@ -339,18 +384,21 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   child: TextFormField(
                                     controller: _placaController,
                                     style: AppInputs.textDecoration,
-                                    decoration: AppInputs.newInputDecoration("placa do veículo", "Placa"),
+                                    decoration: AppInputs.newInputDecoration(
+                                        "placa do veículo", "Placa"),
                                     keyboardType: TextInputType.text,
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
                                         return 'Por favor, insira uma placa';
-                                      } else if (value.length != 7 && value.length != 8) {
+                                      } else if (value.length != 7 &&
+                                          value.length != 8) {
                                         return 'A placa deve ter 7 ou 8 caracteres';
                                       }
                                       return null;
                                     },
                                     inputFormatters: [
-                                      FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z0-9]')),
+                                      FilteringTextInputFormatter.allow(
+                                          RegExp(r'[A-Za-z0-9]')),
                                       LengthLimitingTextInputFormatter(8),
                                     ],
                                     maxLength: 8,
@@ -374,18 +422,86 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 30.0),
-                                  child: TextFormField(
-                                    controller: _cnpjController,
-                                    style: AppInputs.textDecoration,
-                                    decoration: AppInputs.newInputDecoration(
-                                        "000.000.000-00", "CPF/CNPJ"),
-                                    keyboardType: TextInputType.number,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Por favor, insira um CPF ou CNPJ';
-                                      }
-                                      return null;
-                                    },
+                                  child: Column(
+                                    children: [
+                                      DropdownButton<String>(
+                                        value: _selectedType,
+                                        items: const [
+                                          DropdownMenuItem(
+                                            value: 'CPF',
+                                            child: Text(
+                                              'CPF',
+                                              style: TextStyle(
+                                                fontSize: 30,
+                                                color: Colors.green,
+                                              ),
+                                            ),
+                                          ),
+                                          DropdownMenuItem(
+                                            value: 'CNPJ',
+                                            child: Text(
+                                              'CNPJ',
+                                              style: TextStyle(
+                                                fontSize: 30,
+                                                color: Colors.green,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _selectedType = value;
+                                            _cnpjController
+                                                .clear();
+                                          });
+                                        },
+                                        underline: Container(
+                                          height: 2,
+                                          color: Colors.green,
+                                        ),
+                                        isExpanded: true,
+                                        itemHeight: 60,
+                                        icon: const Icon(
+                                          Icons.arrow_drop_down,
+                                          color: Colors.green,
+                                          size: 40,
+                                        ),
+                                      ),
+
+                                      TextFormField(
+                                        controller: _cnpjController,
+                                        style: AppInputs.textDecoration,
+                                        decoration:
+                                            AppInputs.newInputDecoration(
+                                          _selectedType == 'CPF'
+                                              ? '000.000.000-00'
+                                              : '00.000.000/0000-00',
+                                          'CPF/CNPJ',
+                                        ),
+                                        keyboardType: TextInputType.number,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Por favor, insira um ${_selectedType?.toLowerCase()}';
+                                          }
+                                          String cleanedValue = value
+                                              .replaceAll(RegExp(r'[^\d]'), '');
+                                          if (_selectedType == 'CPF' &&
+                                              cleanedValue.length != 11) {
+                                            return 'O CPF deve ter 11 dígitos';
+                                          }
+                                          if (_selectedType == 'CNPJ' &&
+                                              cleanedValue.length != 14) {
+                                            return 'O CNPJ deve ter 14 dígitos';
+                                          }
+                                          return null;
+                                        },
+                                        inputFormatters: [
+                                          _selectedType == 'CPF'
+                                              ? cpfMaskFormatter
+                                              : cnpjMaskFormatter,
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ),
                                 Padding(
@@ -440,7 +556,6 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 30.0),
                                   child: TextFormField(
-
                                     controller: _pead250Controller,
                                     style: AppInputs.textDecoration,
                                     decoration: AppInputs.newInputDecoration(
@@ -637,7 +752,8 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                     controller: _tampasController,
                                     style: AppInputs.textDecoration,
                                     decoration: AppInputs.newInputDecoration(
-                                        "insira uma quantidade em quilos", "Quilos"),
+                                        "insira uma quantidade em quilos",
+                                        "Quilos"),
                                     keyboardType: TextInputType.number,
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
@@ -836,7 +952,8 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                     controller: _papelaoController,
                                     style: AppInputs.textDecoration,
                                     decoration: AppInputs.newInputDecoration(
-                                        "insira uma quantidade em quilos", "Quilos"),
+                                        "insira uma quantidade em quilos",
+                                        "Quilos"),
                                     keyboardType: TextInputType.number,
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
@@ -1136,7 +1253,7 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                     keyboardType: TextInputType.number,
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
-                                        return 'Por favor, insira uma quantidade' ;
+                                        return 'Por favor, insira uma quantidade';
                                       }
                                       return null;
                                     },
@@ -1165,103 +1282,122 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                 ),
                               ],
                             ),
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 30),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          PrimaryButton(text: 'Cadastrar', onTap: () async {
-                            if (_formKey.currentState!.validate()) {
-                              setState(() {
-                                _isLoading = true;
-                              });
+                        const SizedBox(height: 30),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            PrimaryButton(
+                                text: 'Cadastrar',
+                                onTap: () async {
+                                  if (_formKey.currentState!.validate()) {
+                                    setState(() {
+                                      _isLoading = true;
+                                    });
 
-                              try {
-                                await embalagemCollection.add({
-                                  'data': _dataController.text,
-                                  'hora': _horaController.text,
-                                  'entregador': _entregadorController.text,
-                                  'produtor': _produtorController.text,
-                                  'telefone': _telefoneController.text,
-                                  'placa': _placaController.text,
-                                  'propriedade': _propriedadeController.text,
-                                  'cnpj': _cnpjController.text,
-                                  'endereco': _enderecoController.text,
-                                  'pead250': _pead250Controller.text,
-                                  'pead1': _pead1Controller.text,
-                                  'pead5': _pead5Controller.text,
-                                  'pead10': _pead10Controller.text,
-                                  'pead20': _pead20Controller.text,
-                                  'coex250': _coex250Controller.text,
-                                  'coex1': _coex1Controller.text,
-                                  'coex5': _coex5Controller.text,
-                                  'coex10': _coex10Controller.text,
-                                  'coex20': _coex20Controller.text,
-                                  'tampas': _tampasController.text,
-                                  'plasticoMisto1': _plasticoMisto1Controller.text,
-                                  'plasticoMisto5': _plasticoMisto5Controller.text,
-                                  'plasticoMisto10': _plasticoMisto10Controller.text,
-                                  'plasticoMisto20': _plasticoMisto20Controller.text,
-                                  'acoContaminado1': _acoContaminado1Controller.text,
-                                  'acoContaminado5': _acoContaminado5Controller.text,
-                                  'acoContaminado10': _acoContaminado10Controller.text,
-                                  'acoContaminado20': _acoContaminado20Controller.text,
-                                  'papelao': _papelaoController.text,
-                                  '_aluminio250': _aluminio250Controller.text,
-                                  '_aluminio1': _aluminio1Controller.text,
-                                  '_aluminio15': _aluminio15Controller.text,
-                                  '_aco34': _aco34Controller.text,
-                                  'hidroxido': _hidroxidoController.text,
-                                  'acoNL': _acoNLController.text,
-                                  'ibc': _ibcController.text,
-                                  'plasticoQuantidade': _plasticoQuantidadeController.text,
-                                  'plasticoQuilos': _plasticoQuilosController.text,
-                                  'rigida1': _rigida1Controller.text,
-                                  'rigida5': _rigida5Controller.text,
-                                  'rigida10': _rigida10Controller.text,
-                                  'rigida20': _rigida20Controller.text,
-                                  'obs': _obsController.text,
-                                });
+                                    try {
+                                      await embalagemCollection.add({
+                                        'data': _dataController.text,
+                                        'hora': _horaController.text,
+                                        'entregador':
+                                            _entregadorController.text,
+                                        'produtor': _produtorController.text,
+                                        'telefone': _telefoneController.text,
+                                        'placa': _placaController.text,
+                                        'propriedade':
+                                            _propriedadeController.text,
+                                        'cnpj': _cnpjController.text,
+                                        'endereco': _enderecoController.text,
+                                        'pead250': _pead250Controller.text,
+                                        'pead1': _pead1Controller.text,
+                                        'pead5': _pead5Controller.text,
+                                        'pead10': _pead10Controller.text,
+                                        'pead20': _pead20Controller.text,
+                                        'coex250': _coex250Controller.text,
+                                        'coex1': _coex1Controller.text,
+                                        'coex5': _coex5Controller.text,
+                                        'coex10': _coex10Controller.text,
+                                        'coex20': _coex20Controller.text,
+                                        'tampas': _tampasController.text,
+                                        'plasticoMisto1':
+                                            _plasticoMisto1Controller.text,
+                                        'plasticoMisto5':
+                                            _plasticoMisto5Controller.text,
+                                        'plasticoMisto10':
+                                            _plasticoMisto10Controller.text,
+                                        'plasticoMisto20':
+                                            _plasticoMisto20Controller.text,
+                                        'acoContaminado1':
+                                            _acoContaminado1Controller.text,
+                                        'acoContaminado5':
+                                            _acoContaminado5Controller.text,
+                                        'acoContaminado10':
+                                            _acoContaminado10Controller.text,
+                                        'acoContaminado20':
+                                            _acoContaminado20Controller.text,
+                                        'papelao': _papelaoController.text,
+                                        '_aluminio250':
+                                            _aluminio250Controller.text,
+                                        '_aluminio1': _aluminio1Controller.text,
+                                        '_aluminio15':
+                                            _aluminio15Controller.text,
+                                        '_aco34': _aco34Controller.text,
+                                        'hidroxido': _hidroxidoController.text,
+                                        'acoNL': _acoNLController.text,
+                                        'ibc': _ibcController.text,
+                                        'plasticoQuantidade':
+                                            _plasticoQuantidadeController.text,
+                                        'plasticoQuilos':
+                                            _plasticoQuilosController.text,
+                                        'rigida1': _rigida1Controller.text,
+                                        'rigida5': _rigida5Controller.text,
+                                        'rigida10': _rigida10Controller.text,
+                                        'rigida20': _rigida20Controller.text,
+                                        'obs': _obsController.text,
+                                      });
 
-                                await _showSuccessDialog(context);
+                                      await _showSuccessDialog(context);
 
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => const RelatoriosScreen()),
-                                );
-                              } catch (e) {
-                                Fluttertoast.showToast(
-                                  msg: "Erro ao cadastrar: $e",
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.BOTTOM,
-                                  fontSize: 25,
-                                  timeInSecForIosWeb: 3,
-                                );
-                              }
-                            } else {
-                              setState(() {
-                                _isLoading = false;
-                              });
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const RelatoriosScreen()),
+                                      );
+                                    } catch (e) {
+                                      Fluttertoast.showToast(
+                                        msg: "Erro ao cadastrar: $e",
+                                        toastLength: Toast.LENGTH_SHORT,
+                                        gravity: ToastGravity.BOTTOM,
+                                        fontSize: 25,
+                                        timeInSecForIosWeb: 3,
+                                      );
+                                    }
+                                  } else {
+                                    setState(() {
+                                      _isLoading = false;
+                                    });
 
-                              Fluttertoast.showToast(
-                                msg: "Por favor, preencha todos os campos corretamente.",
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.BOTTOM,
-                                fontSize: 25,
-                                timeInSecForIosWeb: 3,
-                              );
-                            }
-                          }),
-                        ],
-                      ),
-                      const SizedBox(height: 50),
-                    ],
+                                    Fluttertoast.showToast(
+                                      msg:
+                                          "Por favor, preencha todos os campos corretamente.",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.BOTTOM,
+                                      fontSize: 25,
+                                      timeInSecForIosWeb: 3,
+                                    );
+                                  }
+                                }),
+                          ],
+                        ),
+                        const SizedBox(height: 50),
+                      ],
+                    ),
                   ),
-                ),
-            ),
           ),
         ),
+      ),
     );
   }
 
@@ -1270,14 +1406,12 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text(
-              'Sair',
-              style: TextStyle(
-                fontSize: 35,
-                fontWeight: FontWeight.bold,
-                color: Colors.green,
-              )
-            ),
+            title: const Text('Sair',
+                style: TextStyle(
+                  fontSize: 35,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green,
+                )),
             content: const Text(
               'Todo conteúdo escrito não será salvo, você tem certeza que deseja sair?',
               style: TextStyle(
@@ -1287,21 +1421,20 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
             ),
             actions: <Widget>[
               TextButton(
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  minimumSize: const Size(100, 50),
-                ),
-                child: const Text(
-                  'Não',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 25,
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    minimumSize: const Size(100, 50),
                   ),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                }
-              ),
+                  child: const Text(
+                    'Não',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 25,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  }),
               TextButton(
                 style: TextButton.styleFrom(
                   backgroundColor: Colors.green,
@@ -1318,14 +1451,13 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(builder: (context) => const MenuScreen()),
-                        (Route<dynamic> route) => false,
+                    (Route<dynamic> route) => false,
                   );
                 },
               ),
             ],
           );
-        }
-    );
+        });
   }
 
   Future<void> _showSuccessDialog(BuildContext context) {
