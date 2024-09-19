@@ -27,12 +27,23 @@ class _PerfilScreenState extends State<PerfilScreen> {
   bool _isLoading = false;
 
   Future<void> _pickImage() async {
-    final XFile? pickedImage = await _picker.pickImage(source: ImageSource.gallery);
+    try {
+      final XFile? pickedImage = await _picker.pickImage(source: ImageSource.gallery);
 
-    if (pickedImage != null) {
-      setState(() {
-        _image = pickedImage;
-      });
+      if (pickedImage != null) {
+        setState(() {
+          _image = pickedImage;
+        });
+        await showCustomAlertDialog(
+          context,
+          "Imagem carregada com sucesso.",
+        );
+      }
+    } catch (e) {
+      await showCustomAlertDialog(
+        context,
+        "Erro ao carregar a imagem: $e",
+      );
     }
   }
 
@@ -59,12 +70,9 @@ class _PerfilScreenState extends State<PerfilScreen> {
         });
       }
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Erro ao carregar dados do usuário.",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        fontSize: 25,
-        timeInSecForIosWeb: 3,
+      await showCustomAlertDialog(
+        context,
+        "Erro ao carregar dados do usuário: $e",
       );
     } finally {
       setState(() {
@@ -194,12 +202,9 @@ class _PerfilScreenState extends State<PerfilScreen> {
                 String senha = _senhaController.text;
 
                 if (novoEmail.isEmpty || senha.isEmpty) {
-                  Fluttertoast.showToast(
-                    msg: "Por favor, insira o novo e-mail e a senha atual.",
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.BOTTOM,
-                    fontSize: 25,
-                    timeInSecForIosWeb: 3,
+                  await showCustomAlertDialog(
+                    context,
+                    "Por favor, insira o novo e-mail e a senha atual.",
                   );
                   return;
                 }
@@ -217,20 +222,14 @@ class _PerfilScreenState extends State<PerfilScreen> {
 
                   await _firestore.collection('users').doc(_user!.uid).update({'email': novoEmail});
 
-                  Fluttertoast.showToast(
-                    msg: "E-mail alterado com sucesso.",
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.BOTTOM,
-                    fontSize: 25,
-                    timeInSecForIosWeb: 3,
+                  await showCustomAlertDialog(
+                    context,
+                    "E-mail alterado com sucesso.",
                   );
                 } catch (e) {
-                  Fluttertoast.showToast(
-                    msg: "Erro ao alterar e-mail: $e",
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.BOTTOM,
-                    fontSize: 25,
-                    timeInSecForIosWeb: 3,
+                  await showCustomAlertDialog(
+                    context,
+                    "Erro ao alterar e-mail: $e",
                   );
                 }
 
@@ -580,5 +579,50 @@ class _PerfilScreenState extends State<PerfilScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> showCustomAlertDialog(BuildContext context, String message) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Aviso',
+            style: TextStyle(
+              color: Colors.green,
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Text(
+            message,
+            style: const TextStyle(
+              fontSize: 20,
+              color: Colors.black,
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.green,
+                minimumSize: const Size(100, 50),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'OK',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+
+    await Future.delayed(const Duration(seconds: 2));
   }
 }

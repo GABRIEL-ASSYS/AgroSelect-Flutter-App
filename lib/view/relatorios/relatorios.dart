@@ -21,15 +21,22 @@ class _RelatoriosScreenState extends State<RelatoriosScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> _toggleFavorite(DocumentSnapshot doc) async {
-    Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?;
-    bool isFavorito = data?['favorito'] ?? false;
+    try {
+      Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?;
+      bool isFavorito = data?['favorito'] ?? false;
 
-    await _firestore.collection('embalagens').doc(doc.id).update({
-      'favorito': !isFavorito,
-    });
+      await _firestore.collection('embalagens').doc(doc.id).update({
+        'favorito': !isFavorito,
+      });
 
-    setState(() {
-    });
+      setState(() {
+      });
+    } catch (e) {
+      await showCustomAlertDialog(
+        context,
+        "Não foi possível favoritar o item: $e",
+      );
+    }
   }
 
   Future<void> _exportToPDF(DocumentSnapshot doc) async {
@@ -487,19 +494,60 @@ class _RelatoriosScreenState extends State<RelatoriosScreen> {
   Future<void> _deleteReport(String documentId) async {
     try {
       await _firestore.collection('embalagens').doc(documentId).delete();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Relatório excluído com sucesso.'),
-          backgroundColor: Colors.green,
-        ),
+      await showCustomAlertDialog(
+        context,
+        "Relatório excluído com sucesso.",
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Erro ao excluir relatório: $e'),
-          backgroundColor: Colors.red,
-        ),
+      await showCustomAlertDialog(
+        context,
+        "Erro ao excluir relatório: $e",
       );
     }
+  }
+
+  Future<void> showCustomAlertDialog(BuildContext context, String message) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Aviso',
+            style: TextStyle(
+              color: Colors.green,
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Text(
+            message,
+            style: const TextStyle(
+              fontSize: 20,
+              color: Colors.black,
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.green,
+                minimumSize: const Size(100, 50),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'OK',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+
+    await Future.delayed(const Duration(seconds: 2));
   }
 }

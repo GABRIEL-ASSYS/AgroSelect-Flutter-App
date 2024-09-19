@@ -125,12 +125,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               onPressed: () async {
                                 if (_emailController.text.isEmpty) {
-                                  Fluttertoast.showToast(
-                                    msg: "Por favor, insira seu e-mail.",
-                                    toastLength: Toast.LENGTH_SHORT,
-                                    gravity: ToastGravity.BOTTOM,
-                                    fontSize: 25,
-                                    timeInSecForIosWeb: 3,
+                                  await showCustomAlertDialog(
+                                    context,
+                                    "Por favor, insira seu e-mail.",
                                   );
                                   return;
                                 }
@@ -140,35 +137,33 @@ class _LoginScreenState extends State<LoginScreen> {
                                     email: _emailController.text,
                                   );
 
-                                  Fluttertoast.showToast(
-                                    msg: "E-mail de redefinição de senha enviado.",
-                                    toastLength: Toast.LENGTH_SHORT,
-                                    gravity: ToastGravity.BOTTOM,
-                                    fontSize: 25,
-                                    timeInSecForIosWeb: 3,
+                                  await showCustomAlertDialog(
+                                    context,
+                                    "E-mail de redefinição de senha enviado.",
                                   );
                                 } catch (e) {
                                   String errorMessage;
                                   if (e is FirebaseAuthException) {
                                     switch (e.code) {
                                       case 'user-not-found':
-                                        errorMessage = 'E-mail não cadastrado.';
+                                        await showCustomAlertDialog(
+                                          context,
+                                          "E-mail não cadastrado.",
+                                        );
                                         break;
                                       default:
-                                        errorMessage = 'Erro ao enviar o e-mail. Tente novamente.';
+                                        await showCustomAlertDialog(
+                                          context,
+                                          "Erro ao enviar o e-mail. Tente novamente.",
+                                        );
                                         break;
                                     }
                                   } else {
-                                    errorMessage = 'Ocorreu um erro. Tente novamente.';
+                                    await showCustomAlertDialog(
+                                      context,
+                                      "Ocorreu um erro. Tente novamente.",
+                                    );
                                   }
-
-                                  Fluttertoast.showToast(
-                                    msg: errorMessage,
-                                    toastLength: Toast.LENGTH_SHORT,
-                                    gravity: ToastGravity.BOTTOM,
-                                    fontSize: 25,
-                                    timeInSecForIosWeb: 3,
-                                  );
                                 }
                               },
                               child: RichText(
@@ -215,37 +210,39 @@ class _LoginScreenState extends State<LoginScreen> {
                             if (e is FirebaseAuthException) {
                               switch (e.code) {
                                 case 'user-not-found':
-                                  errorMessage = 'Seu email não está cadastrado.';
+                                  await showCustomAlertDialog(
+                                    context,
+                                    "Seu email não está cadastrado.",
+                                  );
                                   break;
                                 case 'wrong-password':
-                                  errorMessage = 'Senha incorreta.';
+                                  await showCustomAlertDialog(
+                                    context,
+                                    "Senha incorreta.",
+                                  );
                                   break;
                                 default:
-                                  errorMessage = 'Ocorreu um erro. Por favor, tente novamente.';
+                                  await showCustomAlertDialog(
+                                    context,
+                                    "Ocorreu um erro. Por favor, tente novamente.",
+                                  );
                                   break;
                               }
                             } else {
-                              errorMessage = 'Ocorreu um erro. Por favor, tente novamente.';
+                              await showCustomAlertDialog(
+                                context,
+                                "Ocorreu um erro. Por favor, tente novamente.",
+                              );
                             }
-                            Fluttertoast.showToast(
-                              msg: errorMessage,
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.BOTTOM,
-                              fontSize: 25,
-                              timeInSecForIosWeb: 3,
-                            );
                           }
                         } else {
                           setState(() {
                             _isLoading = false;
                           });
 
-                          Fluttertoast.showToast(
-                            msg: "Por favor, preencha todos os campos corretamente.",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.BOTTOM,
-                            fontSize: 25,
-                            timeInSecForIosWeb: 3,
+                          await showCustomAlertDialog(
+                            context,
+                            "Por favor, preencha todos os campos corretamente.",
                           );
                         }
                       }),
@@ -265,5 +262,50 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> showCustomAlertDialog(BuildContext context, String message) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Aviso',
+            style: TextStyle(
+              color: Colors.green,
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Text(
+            message,
+            style: const TextStyle(
+              fontSize: 20,
+              color: Colors.black,
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.green,
+                minimumSize: const Size(100, 50),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'OK',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+
+    await Future.delayed(const Duration(seconds: 2));
   }
 }
