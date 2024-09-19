@@ -15,6 +15,7 @@ class _EditarEntregadorScreenState extends State<EditarEntregadorScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final _formKey = GlobalKey<FormState>();
   final Map<String, TextEditingController> _controllers = {};
+  bool _isLoading = false;
 
   final Map<String, String> fieldLabels = {
     'nome': 'Nome',
@@ -45,7 +46,10 @@ class _EditarEntregadorScreenState extends State<EditarEntregadorScreen> {
 
   Future<void> _loadData() async {
     try {
-      var doc = await _firestore.collection('entregadores').doc(widget.documentId).get();
+      var doc = await _firestore
+          .collection('entregadores')
+          .doc(widget.documentId)
+          .get();
 
       if (doc.exists) {
         var data = doc.data() as Map<String, dynamic>;
@@ -99,89 +103,99 @@ class _EditarEntregadorScreenState extends State<EditarEntregadorScreen> {
         ),
       ),
       body: Center(
-        child: SizedBox(
-          width: 500,
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  Expanded(
-                    child: ListView(
-                      children: fieldOrder.map((key) {
-                        return Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: TextFormField(
-                            controller: _controllers[key],
-                            decoration: InputDecoration(
-                              labelText: fieldLabels[key],
-                              hintText: fieldLabels[key],
-                              hintStyle: const TextStyle(
-                                color: Colors.green,
+        child: _isLoading
+            ? const CircularProgressIndicator()
+            : SizedBox(
+                width: 500,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: ListView(
+                            children: fieldOrder.map((key) {
+                              return Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: TextFormField(
+                                  controller: _controllers[key],
+                                  decoration: InputDecoration(
+                                    labelText: fieldLabels[key],
+                                    hintText: fieldLabels[key],
+                                    hintStyle: const TextStyle(
+                                      color: Colors.green,
+                                    ),
+                                    labelStyle: const TextStyle(
+                                      color: Colors.green,
+                                      fontSize: 30,
+                                    ),
+                                    enabledBorder: const OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.green,
+                                      ),
+                                    ),
+                                    focusedBorder: const OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.green,
+                                      ),
+                                    ),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Campo obrigatório';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              if (_formKey.currentState?.validate() ?? false) {
+                                setState(() {
+                                  _isLoading = true;
+                                });
+
+                                var updatedData = Map.fromEntries(
+                                  fieldOrder.map((key) => MapEntry(
+                                      key, _controllers[key]?.text ?? '')),
+                                );
+                                await _firestore
+                                    .collection('entregadores')
+                                    .doc(widget.documentId)
+                                    .update(updatedData);
+
+                                await _showSuccessDialog(context);
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
                               ),
-                              labelStyle: const TextStyle(
-                                color: Colors.green,
+                              elevation: 6,
+                              minimumSize: const Size(150, 70),
+                            ),
+                            child: const Text(
+                              'Salvar',
+                              style: TextStyle(
+                                color: Colors.white,
                                 fontSize: 30,
-                              ),
-                              enabledBorder: const OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.green,
-                                ),
-                              ),
-                              focusedBorder: const OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.green,
-                                ),
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Campo obrigatório';
-                              }
-                              return null;
-                            },
                           ),
-                        );
-                      }).toList(),
+                        ),
+                      ],
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        if (_formKey.currentState?.validate() ?? false) {
-                          var updatedData = Map.fromEntries(
-                            fieldOrder.map((key) => MapEntry(key, _controllers[key]?.text ?? '')),
-                          );
-                          await _firestore.collection('entregadores').doc(widget.documentId).update(updatedData);
-
-                          await _showSuccessDialog(context);
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        elevation: 6,
-                        minimumSize: const Size(150, 70),
-                      ),
-                      child: const Text(
-                        'Salvar',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 30,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
-          ),
-        ),
       ),
     );
   }
@@ -238,8 +252,9 @@ class _EditarEntregadorScreenState extends State<EditarEntregadorScreen> {
               onPressed: () {
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => const EntregadoresScreen()),
-                      (Route<dynamic> route) => false,
+                  MaterialPageRoute(
+                      builder: (context) => const EntregadoresScreen()),
+                  (Route<dynamic> route) => false,
                 );
               },
             ),
