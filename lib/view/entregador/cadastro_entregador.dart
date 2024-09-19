@@ -4,8 +4,12 @@ import 'package:addcs/view/entregador/entregadores.dart';
 import 'package:addcs/view/menu/menu.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+
+var cpfMaskFormatter = MaskTextInputFormatter(
+    mask: '###.###.###-##', filter: {"#": RegExp(r'[0-9]')});
+var cnpjMaskFormatter = MaskTextInputFormatter(
+    mask: '##.###.###/####-##', filter: {"#": RegExp(r'[0-9]')});
 
 class CadastroEntregadorScreen extends StatefulWidget {
   const CadastroEntregadorScreen({super.key});
@@ -16,6 +20,8 @@ class CadastroEntregadorScreen extends StatefulWidget {
 
 class _CadastroEntregadorScreenState extends State<CadastroEntregadorScreen> {
   final _formKey = GlobalKey<FormState>();
+
+  String? _selectedType = 'CPF';
 
   final TextEditingController _nomeController = TextEditingController();
   final TextEditingController _produtorController = TextEditingController();
@@ -46,21 +52,15 @@ class _CadastroEntregadorScreenState extends State<CadastroEntregadorScreen> {
         });
         _showSuccessDialog(context);
       } catch (e) {
-        Fluttertoast.showToast(
-          msg: "Erro ao cadastrar: $e",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          fontSize: 25,
-          timeInSecForIosWeb: 3,
+        await showCustomAlertDialog(
+          context,
+          "Erro ao cadastrar: $e",
         );
       }
     } else {
-      Fluttertoast.showToast(
-        msg: "Por favor, preencha todos os campos corretamente.",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        fontSize: 25,
-        timeInSecForIosWeb: 3,
+      await showCustomAlertDialog(
+        context,
+        "Por favor, preencha todos os campos corretamente.",
       );
     }
   }
@@ -183,18 +183,86 @@ class _CadastroEntregadorScreenState extends State<CadastroEntregadorScreen> {
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 30.0),
-                                child: TextFormField(
-                                  controller: _cnpjController,
-                                  style: AppInputs.textDecoration,
-                                  decoration: AppInputs.newInputDecoration(
-                                      "000.000.000-00", "CPF/CNPJ"),
-                                  keyboardType: TextInputType.number,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Por favor, insira um CPF ou CNPJ';
-                                    }
-                                    return null;
-                                  },
+                                child: Column(
+                                  children: [
+                                    DropdownButton<String>(
+                                      value: _selectedType,
+                                      items: const [
+                                        DropdownMenuItem(
+                                          value: 'CPF',
+                                          child: Text(
+                                            'CPF',
+                                            style: TextStyle(
+                                              fontSize: 30,
+                                              color: Colors.green,
+                                            ),
+                                          ),
+                                        ),
+                                        DropdownMenuItem(
+                                          value: 'CNPJ',
+                                          child: Text(
+                                            'CNPJ',
+                                            style: TextStyle(
+                                              fontSize: 30,
+                                              color: Colors.green,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _selectedType = value;
+                                          _cnpjController
+                                              .clear();
+                                        });
+                                      },
+                                      underline: Container(
+                                        height: 2,
+                                        color: Colors.green,
+                                      ),
+                                      isExpanded: true,
+                                      itemHeight: 60,
+                                      icon: const Icon(
+                                        Icons.arrow_drop_down,
+                                        color: Colors.green,
+                                        size: 40,
+                                      ),
+                                    ),
+
+                                    TextFormField(
+                                      controller: _cnpjController,
+                                      style: AppInputs.textDecoration,
+                                      decoration:
+                                      AppInputs.newInputDecoration(
+                                        _selectedType == 'CPF'
+                                            ? '000.000.000-00'
+                                            : '00.000.000/0000-00',
+                                        'CPF/CNPJ',
+                                      ),
+                                      keyboardType: TextInputType.number,
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Por favor, insira um ${_selectedType?.toLowerCase()}';
+                                        }
+                                        String cleanedValue = value
+                                            .replaceAll(RegExp(r'[^\d]'), '');
+                                        if (_selectedType == 'CPF' &&
+                                            cleanedValue.length != 11) {
+                                          return 'O CPF deve ter 11 dígitos';
+                                        }
+                                        if (_selectedType == 'CNPJ' &&
+                                            cleanedValue.length != 14) {
+                                          return 'O CNPJ deve ter 14 dígitos';
+                                        }
+                                        return null;
+                                      },
+                                      inputFormatters: [
+                                        _selectedType == 'CPF'
+                                            ? cpfMaskFormatter
+                                            : cnpjMaskFormatter,
+                                      ],
+                                    ),
+                                  ],
                                 ),
                               ),
                               Padding(
@@ -246,12 +314,9 @@ class _CadastroEntregadorScreenState extends State<CadastroEntregadorScreen> {
                                   MaterialPageRoute(builder: (context) => const EntregadoresScreen()),
                                 );
                               } catch (e) {
-                                Fluttertoast.showToast(
-                                  msg: "Erro ao cadastrar: $e",
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.BOTTOM,
-                                  fontSize: 25,
-                                  timeInSecForIosWeb: 3,
+                                await showCustomAlertDialog(
+                                  context,
+                                  "Erro ao cadastrar: $e",
                                 );
                                 setState(() {
                                   _isLoading = false;
@@ -262,12 +327,9 @@ class _CadastroEntregadorScreenState extends State<CadastroEntregadorScreen> {
                                 _isLoading = false;
                               });
 
-                              Fluttertoast.showToast(
-                                msg: "Por favor, preencha todos os campos corretamente.",
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.BOTTOM,
-                                fontSize: 25,
-                                timeInSecForIosWeb: 3,
+                              await showCustomAlertDialog(
+                                context,
+                                "Por favor, preencha todos os campos corretamente.",
                               );
                             }
                           },
@@ -393,6 +455,52 @@ class _CadastroEntregadorScreenState extends State<CadastroEntregadorScreen> {
         );
       },
     );
+  }
+
+  Future<void> showCustomAlertDialog(BuildContext context, String message) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Aviso',
+            style: TextStyle(
+              color: Colors.green,
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Text(
+            message,
+            style: const TextStyle(
+              fontSize: 20,
+              color: Colors.black,
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.green,
+                minimumSize: const Size(100, 50),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'OK',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+
+    await Future.delayed(const Duration(seconds: 2));
+    Navigator.of(context).pop();
   }
 }
 

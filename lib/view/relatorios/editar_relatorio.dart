@@ -116,14 +116,26 @@ class _EditarRelatorioScreenState extends State<EditarRelatorioScreen> {
   }
 
   Future<void> _loadData() async {
-    var doc =
-        await _firestore.collection('embalagens').doc(widget.documentId).get();
-    if (doc.exists) {
-      var data = doc.data() as Map<String, dynamic>;
-      fieldOrder.forEach((key) {
-        _controllers[key]?.text = data[key] ?? '';
-      });
-      setState(() {});
+    try {
+      var doc =
+      await _firestore.collection('embalagens').doc(widget.documentId).get();
+      if (doc.exists) {
+        var data = doc.data() as Map<String, dynamic>;
+        fieldOrder.forEach((key) {
+          _controllers[key]?.text = data[key] ?? '';
+        });
+        setState(() {});
+      } else {
+        await showCustomAlertDialog(
+          context,
+          "Erro: Documento não encontrado.",
+        );
+      }
+    } catch (e) {
+      await showCustomAlertDialog(
+        context,
+        "Erro ao carregar dados: $e",
+      );
     }
   }
 
@@ -212,16 +224,48 @@ class _EditarRelatorioScreenState extends State<EditarRelatorioScreen> {
                                   _isLoading = true;
                                 });
 
-                                var updatedData = Map.fromEntries(
-                                  fieldOrder.map((key) => MapEntry(
-                                      key, _controllers[key]?.text ?? '')),
-                                );
-                                await _firestore
-                                    .collection('embalagens')
-                                    .doc(widget.documentId)
-                                    .update(updatedData);
+                                try {
+                                  var updatedData = Map.fromEntries(
+                                    fieldOrder.map((key) => MapEntry(
+                                        key, _controllers[key]?.text ?? '')),
+                                  );
+                                  await _firestore
+                                      .collection('embalagens')
+                                      .doc(widget.documentId)
+                                      .update(updatedData);
 
-                                await _showSuccessDialog(context);
+                                  await _showSuccessDialog(context);
+                                } catch (e) {
+                                  if (e is FirebaseException) {
+                                    switch (e.code) {
+                                      case 'permission-denied':
+                                        await showCustomAlertDialog(
+                                          context,
+                                          "Você não tem permissão para atualizar esses dados.",
+                                        );
+                                      case 'not-found':
+                                        await showCustomAlertDialog(
+                                          context,
+                                          "Documento não encontrado.",
+                                        );
+                                      default:
+                                        await showCustomAlertDialog(
+                                          context,
+                                          "Ocorreu um erro ao salvar os dados. Tente novamente.",
+                                        );
+                                    }
+                                  } else {
+                                    await showCustomAlertDialog(
+                                      context,
+                                      "Ocorreu um erro inesperado. Tente novamente.",
+                                    );
+                                  }
+                                }
+                              } else {
+                                await showCustomAlertDialog(
+                                  context,
+                                  "Por favor, preencha todos os campos corretamente.",
+                                );
                               }
                             },
                             style: ElevatedButton.styleFrom(
@@ -361,5 +405,51 @@ class _EditarRelatorioScreenState extends State<EditarRelatorioScreen> {
         );
       },
     );
+  }
+
+  Future<void> showCustomAlertDialog(BuildContext context, String message) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Aviso',
+            style: TextStyle(
+              color: Colors.green,
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Text(
+            message,
+            style: const TextStyle(
+              fontSize: 20,
+              color: Colors.black,
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.green,
+                minimumSize: const Size(100, 50),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'OK',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+
+    await Future.delayed(const Duration(seconds: 2));
+    Navigator.of(context).pop();
   }
 }
