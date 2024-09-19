@@ -339,15 +339,21 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   child: TextFormField(
                                     controller: _placaController,
                                     style: AppInputs.textDecoration,
-                                    decoration: AppInputs.newInputDecoration(
-                                        "placa do veículo", "Placa"),
+                                    decoration: AppInputs.newInputDecoration("placa do veículo", "Placa"),
                                     keyboardType: TextInputType.text,
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
                                         return 'Por favor, insira uma placa';
+                                      } else if (value.length != 7 && value.length != 8) {
+                                        return 'A placa deve ter 7 ou 8 caracteres';
                                       }
                                       return null;
                                     },
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z0-9]')),
+                                      LengthLimitingTextInputFormatter(8),
+                                    ],
+                                    maxLength: 8,
                                   ),
                                 ),
                                 Padding(
