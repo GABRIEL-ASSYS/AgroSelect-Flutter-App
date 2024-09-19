@@ -226,13 +226,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
                                   'email': _emailController.text,
                                 });
 
-                                Fluttertoast.showToast(
-                                  msg: "Cadastro realizado com sucesso!",
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.BOTTOM,
-                                  fontSize: 25,
-                                  timeInSecForIosWeb: 3,
-                                );
+                                await _showSuccessDialog(context);
 
                                 setState(() {
                                   _isLoading = false;
@@ -346,6 +340,54 @@ class _CadastroScreenState extends State<CadastroScreen> {
               },
             ),
           ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showSuccessDialog(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Sucesso!',
+            style: TextStyle(
+              color: Colors.green,
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              const Text(
+                'Registro concluído com sucesso!',
+                style: TextStyle(
+                  color: Colors.green,
+                  fontSize: 18,
+                ),
+              ),
+              const SizedBox(height: 16),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const LoginScreen(),
+                    ),
+                  );
+                },
+                child: const Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                  size: 48,
+                ),
+              ),
+            ],
+          ),
         );
       },
     );

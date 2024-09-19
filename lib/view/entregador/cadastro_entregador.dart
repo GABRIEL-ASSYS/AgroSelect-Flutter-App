@@ -44,17 +44,7 @@ class _CadastroEntregadorScreenState extends State<CadastroEntregadorScreen> {
           'cnpj': _cnpjController.text,
           'endereco': _enderecoController.text,
         });
-        Fluttertoast.showToast(
-          msg: "Cadastro realizado com sucesso!",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          fontSize: 40,
-          timeInSecForIosWeb: 3,
-        );
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const MenuScreen()),
-        );
+        _showSuccessDialog(context);
       } catch (e) {
         Fluttertoast.showToast(
           msg: "Erro ao cadastrar: $e",
@@ -231,55 +221,57 @@ class _CadastroEntregadorScreenState extends State<CadastroEntregadorScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        PrimaryButton(text: 'Cadastrar', onTap: () async {
-                          if (_formKey.currentState!.validate()) {
-                            setState(() {
-                              _isLoading = true;
-                            });
-
-                            try {
-                              await entregadoresCollection.add({
-                                'nome': _nomeController.text,
-                                'produtor': _produtorController.text,
-                                'telefone': _telefoneController.text,
-                                'propriedade': _propriedadeController.text,
-                                'cnpj': _cnpjController.text,
-                                'endereco': _enderecoController.text,
+                        PrimaryButton(
+                          text: 'Cadastrar',
+                          onTap: () async {
+                            if (_formKey.currentState!.validate()) {
+                              setState(() {
+                                _isLoading = true;
                               });
+
+                              try {
+                                await entregadoresCollection.add({
+                                  'nome': _nomeController.text,
+                                  'produtor': _produtorController.text,
+                                  'telefone': _telefoneController.text,
+                                  'propriedade': _propriedadeController.text,
+                                  'cnpj': _cnpjController.text,
+                                  'endereco': _enderecoController.text,
+                                });
+
+                                await _showSuccessDialog(context);
+
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const EntregadoresScreen()),
+                                );
+                              } catch (e) {
+                                Fluttertoast.showToast(
+                                  msg: "Erro ao cadastrar: $e",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  fontSize: 25,
+                                  timeInSecForIosWeb: 3,
+                                );
+                                setState(() {
+                                  _isLoading = false;
+                                });
+                              }
+                            } else {
+                              setState(() {
+                                _isLoading = false;
+                              });
+
                               Fluttertoast.showToast(
-                                msg: "Cadastro realizado com sucesso!",
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.BOTTOM,
-                                fontSize: 40,
-                                timeInSecForIosWeb: 3,
-                              );
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(builder: (context) => const EntregadoresScreen()),
-                              );
-                            } catch (e) {
-                              Fluttertoast.showToast(
-                                msg: "Erro ao cadastrar: $e",
+                                msg: "Por favor, preencha todos os campos corretamente.",
                                 toastLength: Toast.LENGTH_SHORT,
                                 gravity: ToastGravity.BOTTOM,
                                 fontSize: 25,
                                 timeInSecForIosWeb: 3,
                               );
                             }
-                          } else {
-                            setState(() {
-                              _isLoading = false;
-                            });
-
-                            Fluttertoast.showToast(
-                              msg: "Por favor, preencha todos os campos corretamente.",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.BOTTOM,
-                              fontSize: 25,
-                              timeInSecForIosWeb: 3,
-                            );
-                          }
-                        }),
+                          },
+                        ),
                       ],
                     ),
                     const SizedBox(height: 50),
@@ -350,6 +342,54 @@ class _CadastroEntregadorScreenState extends State<CadastroEntregadorScreen> {
               },
             ),
           ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showSuccessDialog(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Sucesso!',
+            style: TextStyle(
+              color: Colors.green,
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              const Text(
+                'Registro concluído com sucesso!',
+                style: TextStyle(
+                  color: Colors.green,
+                  fontSize: 18,
+                ),
+              ),
+              const SizedBox(height: 16),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const EntregadoresScreen(),
+                    ),
+                  );
+                },
+                child: const Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                  size: 48,
+                ),
+              ),
+            ],
+          ),
         );
       },
     );

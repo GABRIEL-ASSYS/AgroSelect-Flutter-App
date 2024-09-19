@@ -164,13 +164,9 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
           'rigida20': _rigida20Controller.text,
           'obs': _obsController.text,
         });
-        Fluttertoast.showToast(
-          msg: "Cadastro realizado com sucesso!",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          fontSize: 40,
-          timeInSecForIosWeb: 3,
-        );
+
+        await _showSuccessDialog(context);
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const MenuScreen()),
@@ -1221,13 +1217,9 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
                                   'rigida20': _rigida20Controller.text,
                                   'obs': _obsController.text,
                                 });
-                                Fluttertoast.showToast(
-                                  msg: "Cadastro realizado com sucesso!",
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.BOTTOM,
-                                  fontSize: 40,
-                                  timeInSecForIosWeb: 3,
-                                );
+
+                                await _showSuccessDialog(context);
+
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(builder: (context) => const RelatoriosScreen()),
@@ -1327,6 +1319,54 @@ class _RecebimentoEmbalagensScreenState extends State<RecebimentoEmbalagensScree
             ],
           );
         }
+    );
+  }
+
+  Future<void> _showSuccessDialog(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Sucesso!',
+            style: TextStyle(
+              color: Colors.green,
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              const Text(
+                'Registro concluído com sucesso!',
+                style: TextStyle(
+                  color: Colors.green,
+                  fontSize: 18,
+                ),
+              ),
+              const SizedBox(height: 16),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const RelatoriosScreen(),
+                    ),
+                  );
+                },
+                child: const Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                  size: 48,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
