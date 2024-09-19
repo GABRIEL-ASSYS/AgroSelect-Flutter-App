@@ -450,6 +450,5 @@ class _EditarRelatorioScreenState extends State<EditarRelatorioScreen> {
     );
 
     await Future.delayed(const Duration(seconds: 2));
-    Navigator.of(context).pop();
   }
 }

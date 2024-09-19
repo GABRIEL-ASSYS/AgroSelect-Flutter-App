@@ -383,6 +383,5 @@ class _EditarEntregadorScreenState extends State<EditarEntregadorScreen> {
     );
 
     await Future.delayed(const Duration(seconds: 2));
-    Navigator.of(context).pop();
   }
 }
