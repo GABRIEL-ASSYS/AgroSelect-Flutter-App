@@ -83,6 +83,7 @@ abstract class AppInputs {
       enabledBorder: OutlineInputBorder(
         borderSide: BorderSide(
           color: AppColors.verde,
+          width: 2,
         ),
       ),
       focusedBorder: OutlineInputBorder(
