@@ -35,6 +35,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
         decoration: AppBackground.boxDecoration,
         child: Scaffold(
           appBar: AppBar(
+            automaticallyImplyLeading: false,
             backgroundColor: AppColors.verde,
             toolbarHeight: 90,
             title: Image.asset(
