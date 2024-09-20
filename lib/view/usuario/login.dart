@@ -188,65 +188,86 @@ class _LoginScreenState extends State<LoginScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      PrimaryButton(text: 'Entrar', onTap: () async {
-                        if (_formKey.currentState!.validate()) {
-                          setState(() {
-                            _isLoading = true;
-                          });
+                      PrimaryButton(
+                        text: 'Entrar',
+                        onTap: () async {
+                          if (_formKey.currentState!.validate()) {
+                            setState(() {
+                              _isLoading = true;
+                            });
 
-                          try {
-                            await _authService.loginUsuario(
-                              email: _emailController.text,
-                              senha: _senhaController.text,
-                            );
-                            if (mounted) {
-                              Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(builder: (context) => const MenuScreen()),
-                                    (Route<dynamic> route) => false,
+                            try {
+                              await _authService.loginUsuario(
+                                email: _emailController.text,
+                                senha: _senhaController.text,
                               );
-                            }
-                          } catch (e) {
-                            String errorMessage;
-                            if (e is FirebaseAuthException) {
-                              switch (e.code) {
-                                case 'user-not-found':
-                                  await showCustomAlertDialog(
-                                    context,
-                                    "Seu email não está cadastrado.",
-                                  );
-                                  break;
-                                case 'wrong-password':
-                                  await showCustomAlertDialog(
-                                    context,
-                                    "Senha incorreta.",
-                                  );
-                                  break;
-                                default:
-                                  await showCustomAlertDialog(
-                                    context,
-                                    "Ocorreu um erro. Por favor, tente novamente.",
-                                  );
-                                  break;
+
+                              if (mounted) {
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const MenuScreen()),
+                                      (Route<dynamic> route) => false,
+                                );
                               }
-                            } else {
-                              await showCustomAlertDialog(
-                                context,
-                                "Ocorreu um erro. Por favor, tente novamente.",
-                              );
-                            }
-                          }
-                        } else {
-                          setState(() {
-                            _isLoading = false;
-                          });
+                            } catch (e) {
+                              setState(() {
+                                _isLoading = false;
+                              });
 
-                          await showCustomAlertDialog(
-                            context,
-                            "Por favor, preencha todos os campos corretamente.",
-                          );
-                        }
-                      }),
+                              if (e is FirebaseAuthException) {
+                                switch (e.code) {
+                                  case 'user-not-found':
+                                    await showCustomAlertDialog(
+                                      context,
+                                      "Seu email não está cadastrado.",
+                                    );
+                                    break;
+                                  case 'invalid-credential':
+                                    await showCustomAlertDialog(
+                                      context,
+                                      "O e-mail foi escrito de forma incorreta, tente novamente.",
+                                    );
+                                    break;
+                                  case 'user-disabled':
+                                    await showCustomAlertDialog(
+                                      context,
+                                      "A conta referente a este e-mail está desativada.",
+                                    );
+                                    break;
+                                  case 'too-many-requests':
+                                    await showCustomAlertDialog(
+                                      context,
+                                      "Estamos tendo muitas solicitações no momento, tente novamente mais tarde.",
+                                    );
+                                    break;
+                                  case 'wrong-password':
+                                    await showCustomAlertDialog(
+                                      context,
+                                      "Senha incorreta. Por favor, tente novamente.",
+                                    );
+                                    break;
+                                  default:
+                                    await showCustomAlertDialog(
+                                      context,
+                                      "Ocorreu um erro. Por favor, tente novamente.",
+                                    );
+                                    break;
+                                }
+                              } else {
+                                await showCustomAlertDialog(
+                                  context,
+                                  "Ocorreu um erro. Por favor, tente novamente.",
+                                );
+                              }
+                            }
+                          } else {
+                            await showCustomAlertDialog(
+                              context,
+                              "Por favor, preencha todos os campos corretamente.",
+                            );
+                          }
+                        },
+                      ),
                       const SizedBox(height: 20),
                       PrimaryButton(text: 'Cadastrar', onTap: () {
                         Navigator.push(
