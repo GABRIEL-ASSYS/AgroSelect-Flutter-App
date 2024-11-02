@@ -512,22 +512,6 @@ class _PerfilScreenState extends State<PerfilScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _pickImage,
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
-                  foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                  padding: MaterialStateProperty.all<EdgeInsets>(const EdgeInsets.symmetric(horizontal: 20, vertical: 10)), // Padding
-                  shape: MaterialStateProperty.all<OutlinedBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),
-                ),
-                child: const Text('Selecionar Foto', style: TextStyle(
-                  fontSize: 25,
-                )),
-              ),
               const SizedBox(height: 20),
               Text(
                 _nome,
