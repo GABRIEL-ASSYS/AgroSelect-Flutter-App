@@ -1,10 +1,64 @@
+import 'dart:convert';
 import 'package:addcs/themes.dart';
 import 'package:addcs/view/relatorios/editar_relatorio.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:printing/printing.dart';
+import 'package:http/http.dart' as http;
+
+Future<void> _sendEmailWithSendGrid(
+    BuildContext context,
+    String pdfBase64,
+    String recipientEmail,
+    String fileName,
+    Function(String) showAlertDialogCallback,
+    ) async {
+  const sendGridApiKey = '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';
+  const senderEmail = 'gabrielassysbrachak@gmail.com';
+  const senderName = 'ADDCS';
+
+  final url = Uri.parse('https://api.sendgrid.com/v3/mail/send');
+  final headers = {
+    'Authorization': 'Bearer $sendGridApiKey',
+    'Content-Type': 'application/json',
+  };
+
+  final body = jsonEncode({
+    'personalizations': [
+      {
+        'to': [
+          {'email': recipientEmail}
+        ],
+        'subject': 'Relatório PDF',
+      }
+    ],
+    'from': {'email': senderEmail, 'name': senderName},
+    'content': [
+      {
+        'type': 'text/plain',
+        'value': 'Segue o relatório PDF em anexo.',
+      }
+    ],
+    'attachments': [
+      {
+        'content': pdfBase64,
+        'type': 'application/pdf',
+        'filename': fileName,
+        'disposition': 'attachment',
+      }
+    ]
+  });
+
+  final response = await http.post(url, headers: headers, body: body);
+
+  if (response.statusCode == 202) {
+    print('E-mail enviado com sucesso!');
+    showAlertDialogCallback('E-mail enviado com sucesso!');
+  } else {
+    print('Falha ao enviar e-mail: ${response.body}');
+    showAlertDialogCallback('Falha ao enviar e-mail: ${response.body}');
+  }
+}
 
 class FavoritosRelatoriosScreen extends StatefulWidget {
   const FavoritosRelatoriosScreen({super.key});
@@ -31,9 +85,8 @@ class _FavoritosRelatoriosScreenState extends State<FavoritosRelatoriosScreen> {
     }
   }
 
-  Future<void> _exportToPDF(DocumentSnapshot doc) async {
+  Future<void> _exportToPDFAndSendEmail(BuildContext context, DocumentSnapshot doc, String recipientEmail) async {
     final pdf = pw.Document();
-
     var fields = doc.data() as Map<String, dynamic>;
 
     var nome = fields['produtor'] ?? 'Desconhecido';
@@ -41,17 +94,9 @@ class _FavoritosRelatoriosScreenState extends State<FavoritosRelatoriosScreen> {
     var hora = fields['hora'] ?? '';
 
     final List<pw.Widget> contentWidgets = [];
-
     contentWidgets.add(pw.Text('Relatório $nome - $data - $hora',
       style: pw.TextStyle(fontSize: 40, fontWeight: pw.FontWeight.bold),
     ));
-
-    contentWidgets.add(pw.SizedBox(height: 20));
-    contentWidgets.add(pw.Text('Informações do relatório:',
-      style: const pw.TextStyle(fontSize: 30),
-    ));
-
-    contentWidgets.add(pw.SizedBox(height: 20));
 
     contentWidgets.addAll(fieldOrder.map((key) {
       if (fields.containsKey(key)) {
@@ -67,28 +112,32 @@ class _FavoritosRelatoriosScreenState extends State<FavoritosRelatoriosScreen> {
       }
     }).toList());
 
-    while (contentWidgets.isNotEmpty) {
-      final pageContent = contentWidgets.take(30).toList();
-      contentWidgets.removeRange(0, pageContent.length);
+    pdf.addPage(
+      pw.Page(
+        build: (pw.Context context) {
+          return pw.Padding(
+            padding: const pw.EdgeInsets.all(16.0),
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: contentWidgets,
+            ),
+          );
+        },
+      ),
+    );
 
-      pdf.addPage(
-        pw.Page(
-          build: (pw.Context context) {
-            return pw.Padding(
-              padding: const pw.EdgeInsets.all(16.0),
-              child: pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                children: pageContent,
-              ),
-            );
-          },
+    final pdfBytes = await pdf.save();
+    final pdfBase64 = base64Encode(pdfBytes);
+
+    await _sendEmailWithSendGrid(context, pdfBase64, recipientEmail, 'Relatorio_$nome.pdf', (String message) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: message.contains('sucesso') ? Colors.green : Colors.red,
+          duration: const Duration(seconds: 3),
         ),
       );
-    }
-
-    await Printing.layoutPdf(
-      onLayout: (PdfPageFormat format) async => pdf.save(),
-    );
+    });
   }
 
   final Map<String, String> fieldLabels = {
@@ -401,7 +450,7 @@ class _FavoritosRelatoriosScreenState extends State<FavoritosRelatoriosScreen> {
                                             const SizedBox(width: 8),
                                             ElevatedButton(
                                               onPressed: () async {
-                                                await _exportToPDF(doc);
+                                                await _showEmailInputDialog(context, doc);
                                               },
                                               style: ElevatedButton.styleFrom(
                                                 backgroundColor: Colors.green,
@@ -442,40 +491,82 @@ class _FavoritosRelatoriosScreenState extends State<FavoritosRelatoriosScreen> {
     );
   }
 
-  Future<void> showCustomAlertDialog(BuildContext context, String message) async {
-    showDialog(
+  Future<void> _showEmailInputDialog(BuildContext context, DocumentSnapshot doc) async {
+    final emailController = TextEditingController();
+
+    await showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text(
-            'Aviso',
+            'Enviar PDF por E-mail',
             style: TextStyle(
-              color: Colors.green,
-              fontSize: 30,
+              fontSize: 35,
               fontWeight: FontWeight.bold,
+              color: Colors.green,
             ),
           ),
-          content: Text(
-            message,
+          content: TextField(
+            controller: emailController,
+            decoration: const InputDecoration(
+              labelText: 'Digite o e-mail',
+              hintText: 'exemplo@email.com',
+              hintStyle: TextStyle(
+                fontSize: 20,
+                color: Colors.green,
+              ),
+              labelStyle: TextStyle(
+                fontSize: 30,
+                color: Colors.green,
+              ),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.green),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.green),
+              ),
+            ),
+            keyboardType: TextInputType.emailAddress,
             style: const TextStyle(
-              fontSize: 20,
-              color: Colors.black,
+              fontSize: 25,
+              color: Colors.green,
             ),
           ),
           actions: <Widget>[
             TextButton(
+              onPressed: () => Navigator.of(context).pop(),
               style: TextButton.styleFrom(
                 backgroundColor: Colors.green,
                 minimumSize: const Size(100, 50),
               ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
               child: const Text(
-                'OK',
+                'Cancelar',
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 20,
+                  fontSize: 25,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop();
+                final email = emailController.text;
+                if (email.isNotEmpty) {
+                  await _exportToPDFAndSendEmail(context, doc, email);
+                  await showCustomAlertDialog(context, 'PDF enviado para o e-mail com sucesso!');
+                } else {
+                  await showCustomAlertDialog(context, 'Por favor, insira um e-mail válido.');
+                }
+              },
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.green,
+                minimumSize: const Size(100, 50),
+              ),
+              child: const Text(
+                'Enviar',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 25,
                 ),
               ),
             ),
@@ -483,7 +574,50 @@ class _FavoritosRelatoriosScreenState extends State<FavoritosRelatoriosScreen> {
         );
       },
     );
-
-    await Future.delayed(const Duration(seconds: 2));
   }
+}
+
+Future<void> showCustomAlertDialog(BuildContext context, String message) async {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text(
+          'Aviso',
+          style: TextStyle(
+            color: Colors.green,
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: Text(
+          message,
+          style: const TextStyle(
+            fontSize: 20,
+            color: Colors.black,
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.green,
+              minimumSize: const Size(100, 50),
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'OK',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+              ),
+            ),
+          ),
+        ],
+      );
+    },
+  );
+
+  await Future.delayed(const Duration(seconds: 2));
 }
