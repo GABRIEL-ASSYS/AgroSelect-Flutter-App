@@ -39,6 +39,7 @@ class DateInputFormatter extends TextInputFormatter {
 }
 
 class TimeInputFormatter extends TextInputFormatter {
+
   @override
   TextEditingValue formatEditUpdate(
       TextEditingValue oldValue, TextEditingValue newValue) {
@@ -70,6 +71,55 @@ class RecebimentoEmbalagensScreen extends StatefulWidget {
 
 class _RecebimentoEmbalagensScreenState
     extends State<RecebimentoEmbalagensScreen> {
+  @override
+  void initState() {
+    super.initState();
+    fetchEntregadores();
+  }
+
+  List<Map<String, dynamic>> entregadores = [];
+
+  Future<void> fetchEntregadores() async {
+    try {
+      final querySnapshot = await FirebaseFirestore.instance.collection('entregadores').get();
+
+      setState(() {
+        entregadores = querySnapshot.docs.map((doc) {
+          return {
+            'id': doc.id,
+            'nome': doc['nome'],
+          };
+        }).toList();
+      });
+    } catch (e) {
+      print("Erro ao buscar entregadores: $e");
+    }
+  }
+
+  String? _selectedEntregadorId;
+
+  Future<void> fetchEntregadorData(String entregadorId) async {
+    try {
+      final doc = await FirebaseFirestore.instance
+          .collection('entregadores')
+          .doc(entregadorId)
+          .get();
+
+      if (doc.exists) {
+        final data = doc.data()!;
+
+        _entregadorController.text = data['nome'] ?? '';
+        _produtorController.text = data['produtor'] ?? '';
+        _telefoneController.text = data['telefone'] ?? '';
+        _propriedadeController.text = data['propriedade'] ?? '';
+        _cnpjController.text = data['cnpj'] ?? '';
+        _enderecoController.text = data['endereco'] ?? '';
+      }
+    } catch (e) {
+      print("Erro ao buscar dados do entregador: $e");
+    }
+  }
+
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _dataController = TextEditingController();
@@ -289,6 +339,30 @@ class _RecebimentoEmbalagensScreenState
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Padding(
+                                  padding: const EdgeInsets.only(bottom: 30.0),
+                                  child: DropdownButtonFormField<String>(
+                                    decoration: AppInputs.newInputDecoration("Selecione o Entregador", "Entregador"),
+                                    style: AppInputs.textDecoration,
+                                    value: _selectedEntregadorId,
+                                    items: entregadores.map((entregador) {
+                                      return DropdownMenuItem<String>(
+                                        value: entregador['id'],
+                                        child: Text(entregador['nome']),
+                                      );
+                                    }).toList(),
+                                    onChanged: (String? newValue) {
+                                      setState(() {
+                                        _selectedEntregadorId = newValue;
+                                      });
+                                      if (newValue != null) {
+                                        fetchEntregadorData(newValue);
+                                      }
+                                    },
+                                    icon: const Icon(Icons.arrow_drop_down, color: Colors.green),
+                                    dropdownColor: Colors.white,
+                                  ),
+                                ),
+                                Padding(
                                     padding:
                                         const EdgeInsets.only(bottom: 30.0),
                                     child: TextFormField(
@@ -337,6 +411,7 @@ class _RecebimentoEmbalagensScreenState
                                     style: AppInputs.textDecoration,
                                     decoration: AppInputs.newInputDecoration(
                                         "nome do entregador", "Entregador"),
+                                    readOnly: true,
                                     keyboardType: TextInputType.name,
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
@@ -353,6 +428,7 @@ class _RecebimentoEmbalagensScreenState
                                     style: AppInputs.textDecoration,
                                     decoration: AppInputs.newInputDecoration(
                                         "nome do produtor", "Produtor"),
+                                    readOnly: true,
                                     keyboardType: TextInputType.name,
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
@@ -369,6 +445,7 @@ class _RecebimentoEmbalagensScreenState
                                     style: AppInputs.textDecoration,
                                     decoration: AppInputs.newInputDecoration(
                                         "(00)00000-0000", "Telefone"),
+                                    readOnly: true,
                                     keyboardType: TextInputType.phone,
                                     inputFormatters: [phoneMaskFormatter],
                                     validator: (value) {
@@ -411,6 +488,7 @@ class _RecebimentoEmbalagensScreenState
                                     style: AppInputs.textDecoration,
                                     decoration: AppInputs.newInputDecoration(
                                         "nome da propriedade", "Propriedade"),
+                                    readOnly: true,
                                     keyboardType: TextInputType.name,
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
@@ -478,6 +556,7 @@ class _RecebimentoEmbalagensScreenState
                                               : '00.000.000/0000-00',
                                           'CPF/CNPJ',
                                         ),
+                                        readOnly: true,
                                         keyboardType: TextInputType.number,
                                         validator: (value) {
                                           if (value == null || value.isEmpty) {
@@ -511,6 +590,7 @@ class _RecebimentoEmbalagensScreenState
                                     style: AppInputs.textDecoration,
                                     decoration: AppInputs.newInputDecoration(
                                         "insira o endereço", "Endereço"),
+                                    readOnly: true,
                                     keyboardType: TextInputType.streetAddress,
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
