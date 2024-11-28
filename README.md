@@ -12,7 +12,7 @@
 * Lista de entregadores;
 * Funcionalidade de favoritar relatórios e entregadores;
 * Botões para ocultar ou visualizar as senhas;
-* Tela de perfil onde pode ser alterado a senha e e-mail, onde também pode ser feita a verificação de e-mail e onde pode ser colocado uma foto de perfil;
+* Tela de perfil onde pode ser alterado a senha e e-mail, onde também pode ser feita a verificação de e-mail;
 * Possibilidade de exportar os relatórios em PDF;
 
 ## 🚀 Começando
