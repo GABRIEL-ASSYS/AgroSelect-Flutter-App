@@ -31,7 +31,6 @@ De que coisas você precisa para instalar o software e como instalá-lo?
 
 ### 🔧 Instalação
 
-* ⚠️ Para este projeto você precisa ter o Node.js instalado em seu computador.
 * Acesse a paleta de Comandos do Visual Studio Code.
 * No prompt da paleta de comandos, insira <b>gitcl</b>, selecione o comando Git: <b>Clone</b> e pressione <b>Enter</b>.
 * Quando for solicitada a URL do Repositório, selecione Clonar do GitHub e pressione <b>Enter</b>.
